@@ -210,14 +210,20 @@ export default function CandidateWorkspace({
                       <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
                     </button>
                   </div>
-                  <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-100 hover:bg-gray-50 transition-all text-xs font-medium text-gray-600">
+                  <button
+                    title="Messaging coming soon"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-100 hover:bg-gray-50 transition-all text-xs font-medium text-gray-400 cursor-not-allowed opacity-50"
+                  >
                     <MessageSquare className="w-3.5 h-3.5" />
                     Message
                   </button>
-                  <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-100 hover:bg-gray-50 transition-all text-xs font-medium text-gray-600">
+                  <a
+                    href={`mailto:${selectedCandidate.email}`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-100 hover:bg-gray-50 transition-all text-xs font-medium text-gray-600"
+                  >
                     <Mail className="w-3.5 h-3.5" />
                     Email
-                  </button>
+                  </a>
                 </div>
               </div>
 
