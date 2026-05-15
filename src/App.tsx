@@ -5,7 +5,6 @@ import PostJobView from './components/PostJobView';
 import ClarifyJobView from './components/ClarifyJobView';
 import CandidateWorkspace from './components/CandidateWorkspace';
 import { JobsPostedView } from './components/JobsPostedView';
-import { OutreachView } from './components/OutreachView';
 import { CalendarView } from './components/CalendarView';
 import { MarketIntelligence } from './components/MarketIntelligence';
 import { IntegrationsView } from './components/IntegrationsView';
@@ -159,22 +158,6 @@ function AppContent() {
     return unsubscribe;
   }, [user]);
 
-  const handleScheduleInterview = useCallback(async (data: Omit<Interview, 'id' | 'createdAt'>) => {
-    if (!user) return;
-    try {
-      // Strip undefined fields — Firestore rejects them
-      const doc: Record<string, any> = { createdAt: serverTimestamp() };
-      for (const [k, v] of Object.entries(data)) {
-        if (v !== undefined) doc[k] = v;
-      }
-      await addDoc(collection(db, 'interviews'), doc);
-      toast('Interview scheduled', 'success');
-    } catch (error) {
-      handleFirestoreError(error, OperationType.CREATE, 'interviews');
-      toast('Failed to schedule interview', 'error');
-      throw error;
-    }
-  }, [user, toast]);
 
   const handleDeleteInterview = useCallback(async (id: string) => {
     if (!user) return;
@@ -519,17 +502,6 @@ function AppContent() {
             </motion.div>
           )}
 
-          {currentView === View.OUTREACH && (
-            <motion.div
-              key="outreach"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="w-full h-full"
-            >
-              <OutreachView />
-            </motion.div>
-          )}
 
 
           {currentView === View.CALENDAR && (
