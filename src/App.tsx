@@ -9,6 +9,7 @@ import { CalendarView } from './components/CalendarView';
 import { MarketIntelligence } from './components/MarketIntelligence';
 import { IntegrationsView } from './components/IntegrationsView';
 import { FeedbackView } from './components/FeedbackView';
+import { SettingsView } from './components/SettingsView';
 import { NICHE } from './config/niche';
 import { IMPORTED_CANDIDATES } from './data/imported_candidates';
 import { motion, AnimatePresence } from 'motion/react';
@@ -565,6 +566,18 @@ function AppContent() {
               className="w-full h-full"
             >
               <FeedbackView />
+            </motion.div>
+          )}
+
+          {currentView === View.SETTINGS && (
+            <motion.div
+              key="settings"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full h-full"
+            >
+              <SettingsView />
             </motion.div>
           )}
         </AnimatePresence>

@@ -7,6 +7,7 @@ export enum View {
   MARKET_INTEL = 'market-intel',
   INTEGRATIONS = 'integrations',
   FEEDBACK = 'feedback',
+  SETTINGS = 'settings',
 }
 
 export type Stage = 'Identified' | 'Initial Screen' | 'Technical' | 'On-site' | 'Offer' | 'Cold';
