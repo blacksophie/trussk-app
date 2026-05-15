@@ -217,7 +217,7 @@ export const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
                 }}
                 itemStyle={{ color: '#FF6B00', fontWeight: 900, fontSize: '10px' }}
                 labelStyle={{ color: '#000', fontWeight: 900, fontSize: '11px', marginBottom: '4px', textTransform: 'uppercase' }}
-                formatter={(value: number) => [`$${value.toLocaleString()}`, 'Annual Salary']}
+                formatter={(value) => [`$${Number(value ?? 0).toLocaleString()}`, 'Annual Salary'] as [string, string]}
               />
               <Bar 
                 dataKey="value" 

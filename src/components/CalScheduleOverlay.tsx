@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { X, Loader2 } from 'lucide-react';
 import Cal, { getCalApi } from '@calcom/embed-react';

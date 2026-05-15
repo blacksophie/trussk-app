@@ -30,7 +30,7 @@ export const NICHE = {
   id:             raw.nicheId,
   display:        raw.nicheDisplay,
   tagline:        raw.nicheTagline,
-  industries:     raw.industries.split(',').map(s => s.trim()),
+  industries:     raw.industries.split(',').map((s: string) => s.trim()),
   marketSoc:      raw.marketSoc,
   marketLocation: raw.marketLocation,
   marketJobTitle: raw.marketJobTitle,
