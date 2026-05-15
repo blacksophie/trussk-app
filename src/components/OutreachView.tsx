@@ -407,7 +407,20 @@ export const OutreachView: React.FC = () => {
                     <MoreHorizontal className="w-4 h-4" />
                   </button>
                 </div>
-                <button className="flex items-center gap-1.5 text-[12px] font-medium text-brand bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-orange-100 transition-colors">
+                <button
+                  onClick={() => {
+                    const msgs: GmailMessage[] = fullThread?.messages ?? [selected];
+                    const firstMsg = msgs[0];
+                    const from = parseFrom(hdr(firstMsg, 'From'));
+                    const subject = hdr(firstMsg, 'Subject') || '';
+                    setToEmail(from.email);
+                    setComposeSubject(subject.startsWith('Re:') ? subject : `Re: ${subject}`);
+                    setComposeBody('');
+                    setComposing(true);
+                    setSendError(null);
+                  }}
+                  className="flex items-center gap-1.5 text-[12px] font-medium text-brand bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-orange-100 transition-colors"
+                >
                   <Reply className="w-3.5 h-3.5" /> Reply
                 </button>
               </div>
