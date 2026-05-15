@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 import { Candidate, Interview, Job } from '../types';
-import { ScheduleInterviewModal } from './ScheduleInterviewModal';
+import { CalScheduleOverlay } from './CalScheduleOverlay';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTH_NAMES = [
@@ -27,7 +27,7 @@ interface CalendarViewProps {
   interviews?: Interview[];
   userId?: string;
   jobId?: string;
-  onScheduleInterview?: (data: Omit<Interview, 'id' | 'createdAt'>) => Promise<void>;
+  calUrl?: string;
   onDeleteInterview?: (id: string) => Promise<void>;
 }
 
@@ -37,15 +37,15 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   interviews = [],
   userId = '',
   jobId,
-  onScheduleInterview,
+  calUrl,
   onDeleteInterview,
 }) => {
   const today = new Date();
   const [selectedDay, setSelectedDay] = useState(today.getDate());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [showModal, setShowModal] = useState(false);
-  const [modalDefaultDate, setModalDefaultDate] = useState<string | undefined>();
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [overlayCandidate, setOverlayCandidate] = useState<Candidate | null>(null);
 
   const handlePrevMonth = () => {
     const newMonth = currentMonth === 0 ? 11 : currentMonth - 1;
@@ -65,15 +65,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     setSelectedDay(d => Math.min(d, daysInNew));
   };
 
-  const openModal = (day?: number) => {
-    if (day !== undefined) {
-      const m = String(currentMonth + 1).padStart(2, '0');
-      const d = String(day).padStart(2, '0');
-      setModalDefaultDate(`${currentYear}-${m}-${d}`);
-    } else {
-      setModalDefaultDate(undefined);
-    }
-    setShowModal(true);
+  const openOverlay = (candidate?: Candidate | null) => {
+    setOverlayCandidate(candidate ?? null);
+    setShowOverlay(true);
   };
 
   const getInterviewsForDay = (day: number) =>
@@ -127,8 +121,10 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           </div>
 
           <button
-            onClick={() => openModal()}
-            className="flex items-center gap-2 px-4 py-2 bg-brand rounded-lg text-white text-sm font-semibold hover:opacity-90 transition-all shadow-sm"
+            onClick={() => openOverlay()}
+            disabled={!calUrl}
+            title={calUrl ? undefined : 'Add your Cal.com URL in Integrations first'}
+            className="flex items-center gap-2 px-4 py-2 bg-brand rounded-lg text-white text-sm font-semibold hover:opacity-90 transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Plus className="w-4 h-4" />
             Schedule Interview
@@ -298,8 +294,10 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   <p className="text-sm font-medium text-gray-500 mb-1">No interviews scheduled</p>
                   <p className="text-xs text-gray-400 mb-4">Nothing on the books for this day.</p>
                   <button
-                    onClick={() => openModal(selectedDay)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-brand hover:text-brand transition-all"
+                    onClick={() => openOverlay()}
+                    disabled={!calUrl}
+                    title={calUrl ? undefined : 'Add your Cal.com URL in Integrations first'}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-brand hover:text-brand transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Schedule Interview
@@ -311,17 +309,15 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         </div>
       </div>
 
-      {showModal && onScheduleInterview && (
-        <ScheduleInterviewModal
-          candidates={candidates}
-          jobs={jobs}
-          defaultDate={modalDefaultDate}
-          userId={userId}
-          jobId={jobId}
-          onSchedule={onScheduleInterview}
-          onClose={() => setShowModal(false)}
-        />
-      )}
+      <AnimatePresence>
+        {showOverlay && calUrl && (
+          <CalScheduleOverlay
+            calUrl={calUrl}
+            candidate={overlayCandidate}
+            onClose={() => setShowOverlay(false)}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 };

@@ -54,6 +54,7 @@ function AppContent() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [calUrl, setCalUrl] = useState<string | undefined>(undefined);
 
   // Auth State
   useEffect(() => {
@@ -66,12 +67,15 @@ function AppContent() {
           if (!active) return;
           const data = snap.data();
           setNeedsOnboarding(!data?.onboardingComplete);
+          setCalUrl(data?.calUrl ?? undefined);
         } catch {
           if (!active) return;
           setNeedsOnboarding(false);
+          setCalUrl(undefined);
         }
       } else {
         setNeedsOnboarding(false);
+        setCalUrl(undefined);
       }
       if (active) setAuthLoading(false);
     });
@@ -537,12 +541,8 @@ function AppContent() {
               className="w-full h-full"
             >
               <CalendarView
-                candidates={candidates}
-                jobs={postedJobs}
                 interviews={interviews}
-                userId={user.uid}
-                jobId={selectedJob?.id}
-                onScheduleInterview={handleScheduleInterview}
+                calUrl={calUrl}
                 onDeleteInterview={handleDeleteInterview}
               />
             </motion.div>
