@@ -11,3 +11,4 @@ coverage/
 # Firebase service account key — contains private key, NEVER commit
 firebase-admin.json
 functions/.env
+.gstack/

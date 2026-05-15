@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { signInWithGoogle, signInWithMicrosoft, saveTokenToDB } from '../../lib/firebase';
+import { signInWithGoogle } from '../../lib/firebase';
 
 interface Props {
   onEmailContinue: (email: string) => void;
@@ -10,35 +10,15 @@ interface Props {
 
 export default function SignUpForm({ onEmailContinue, onGoogleSuccess, onSwitchToSignIn }: Props) {
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState<'google' | 'microsoft' | null>(null);
+  const [loading, setLoading] = useState<'google' | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleGoogle = async () => {
     setError(null);
     setLoading('google');
     try {
-      const { result, accessToken } = await signInWithGoogle();
-      if (accessToken) {
-        await saveTokenToDB(result.user.uid, 'google', accessToken);
-      }
+      await signInWithGoogle();
       onGoogleSuccess();
-    } catch (e: any) {
-      setError(mapAuthError(e));
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const handleMicrosoft = async () => {
-    setError(null);
-    setLoading('microsoft');
-    try {
-      const msResult = await signInWithMicrosoft();
-      const uid = msResult.account?.localAccountId ?? 'ms-anon';
-      await saveTokenToDB(uid, 'microsoft', msResult.accessToken);
-      // Microsoft doesn't create a Firebase user — route to Google or email for identity.
-      // Full Microsoft identity via Firebase requires a custom token exchange (Step 3).
-      setError('Outlook connected! Sign in with Google or email to finish setting up your account.');
     } catch (e: any) {
       setError(mapAuthError(e));
     } finally {
@@ -58,14 +38,7 @@ export default function SignUpForm({ onEmailContinue, onGoogleSuccess, onSwitchT
         Create an account to start hiring infrastructure talent with Trussk.
       </p>
 
-      {/* SSO buttons — Microsoft on top, Google below, stacked vertically */}
       <div className="flex flex-col gap-2.5 mb-5">
-        <SSOButton
-          icon="microsoft"
-          label="Sign up with Microsoft"
-          loading={loading === 'microsoft'}
-          onClick={handleMicrosoft}
-        />
         <SSOButton
           icon="google"
           label="Sign up with Google"
@@ -76,7 +49,6 @@ export default function SignUpForm({ onEmailContinue, onGoogleSuccess, onSwitchT
 
       <Divider />
 
-      {/* Email form */}
       <form onSubmit={handleEmailContinue}>
         <label className="block text-[12px] font-semibold text-gray-600 mb-1.5">Email</label>
         <div className="relative mb-4">

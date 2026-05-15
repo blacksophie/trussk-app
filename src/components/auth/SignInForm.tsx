@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AnimatePresence } from 'motion/react';
-import { signInWithGoogle, signInWithMicrosoft, saveTokenToDB } from '../../lib/firebase';
+import { signInWithGoogle } from '../../lib/firebase';
 import { SSOButton, ErrorBanner, mapAuthError } from './SignUpForm';
 
 interface Props {
@@ -11,33 +11,15 @@ interface Props {
 
 export default function SignInForm({ onEmailContinue, onGoogleSuccess, onSwitchToSignUp }: Props) {
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState<'google' | 'microsoft' | null>(null);
+  const [loading, setLoading] = useState<'google' | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleGoogle = async () => {
     setError(null);
     setLoading('google');
     try {
-      const { result, accessToken } = await signInWithGoogle();
-      if (accessToken) {
-        await saveTokenToDB(result.user.uid, 'google', accessToken);
-      }
+      await signInWithGoogle();
       onGoogleSuccess();
-    } catch (e: any) {
-      setError(mapAuthError(e));
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const handleMicrosoft = async () => {
-    setError(null);
-    setLoading('microsoft');
-    try {
-      const msResult = await signInWithMicrosoft();
-      const uid = msResult.account?.localAccountId ?? 'ms-anon';
-      await saveTokenToDB(uid, 'microsoft', msResult.accessToken);
-      setError('Outlook connected! Sign in with Google or email to finish setting up your account.');
     } catch (e: any) {
       setError(mapAuthError(e));
     } finally {
@@ -57,9 +39,7 @@ export default function SignInForm({ onEmailContinue, onGoogleSuccess, onSwitchT
         Welcome back. Sign in to continue managing your pipeline.
       </p>
 
-      {/* SSO buttons — Microsoft on top, Google below, stacked vertically */}
       <div className="flex flex-col gap-2.5 mb-5">
-        <SSOButton icon="microsoft" label="Sign in with Microsoft" loading={loading === 'microsoft'} onClick={handleMicrosoft} />
         <SSOButton icon="google" label="Sign in with Google" loading={loading === 'google'} onClick={handleGoogle} />
       </div>
 
