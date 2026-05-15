@@ -196,23 +196,6 @@ export default function Sidebar({ currentView, onViewChange, isOpen, onClose, in
         {/* Bottom Actions */}
         {!isCollapsed && (
           <div className="mt-auto pt-8 focus-visible:outline-none">
-            {/* Upgrade Section */}
-            {!isCollapsed && (
-              <div className="px-2 mb-6">
-                <button className="w-full flex items-center justify-between p-4 rounded-2xl bg-linear-to-br from-brand/20 to-brand/5 border border-brand/20 group hover:border-brand/40 transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-brand rounded-lg text-white shadow-lg shadow-brand/20">
-                      <Sparkles className="w-4 h-4" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-[11px] font-semibold text-brand uppercase tracking-widest leading-none mb-1">Elite Plan</p>
-                      <p className="text-xs font-bold text-white tracking-tight">Upgrade Now</p>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-brand group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
-            )}
 
             {/* User Profile */}
             <div className="flex items-center gap-3 mb-6 p-2 rounded-2xl hover:bg-white/4 cursor-pointer transition-all active:scale-[0.98] group">
