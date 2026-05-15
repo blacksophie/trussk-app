@@ -485,10 +485,11 @@ function AppContent() {
               exit={{ opacity: 0 }}
               className="w-full h-full"
             >
-              <JobsPostedView 
-                jobs={postedJobs} 
-                onSelectJob={handleSelectJob} 
+              <JobsPostedView
+                jobs={postedJobs}
+                onSelectJob={handleSelectJob}
                 onDeleteJob={handleDeleteJob}
+                onNewRole={() => setCurrentView(View.POST_JOB)}
               />
             </motion.div>
           )}

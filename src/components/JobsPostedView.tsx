@@ -20,6 +20,7 @@ interface JobsPostedViewProps {
   jobs: Job[];
   onSelectJob: (job: Job) => void;
   onDeleteJob: (id: string) => void;
+  onNewRole?: () => void;
   onSeedDatabase?: () => void;
 }
 
@@ -45,7 +46,7 @@ function timeAgo(dateStr: string) {
   return `${Math.floor(days / 30)}mo ago`;
 }
 
-export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJob, onDeleteJob }) => {
+export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJob, onDeleteJob, onNewRole }) => {
   const [search, setSearch] = useState('');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -93,7 +94,7 @@ export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJo
                 className="pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand/40 focus:bg-white transition-all w-44"
               />
             </div>
-            <button className="flex items-center gap-1.5 px-3 py-2 bg-brand text-white text-xs font-medium rounded-lg hover:bg-brand/90 transition-all shadow-sm shadow-brand/20">
+            <button onClick={onNewRole} className="flex items-center gap-1.5 px-3 py-2 bg-brand text-white text-xs font-medium rounded-lg hover:bg-brand/90 transition-all shadow-sm shadow-brand/20">
               <Plus className="w-3.5 h-3.5" />
               New Role
             </button>
@@ -119,7 +120,7 @@ export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJo
               <p className="text-xs text-gray-400 max-w-xs leading-relaxed mb-6">
                 Post your first job and Trussk will automatically identify and rank the best candidates for you.
               </p>
-              <button className="flex items-center gap-2 px-4 py-2.5 bg-brand text-white text-xs font-medium rounded-lg hover:bg-brand/90 transition-all shadow-sm shadow-brand/20">
+              <button onClick={onNewRole} className="flex items-center gap-2 px-4 py-2.5 bg-brand text-white text-xs font-medium rounded-lg hover:bg-brand/90 transition-all shadow-sm shadow-brand/20">
                 <Plus className="w-3.5 h-3.5" />
                 Post your first role
               </button>
