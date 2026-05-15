@@ -9,10 +9,129 @@ import {
   Phone,
   CalendarDays,
   Trash2,
+  X,
+  Search,
+  Briefcase,
+  User,
 } from 'lucide-react';
 
 import { Candidate, Interview, Job } from '../types';
 import { CalScheduleOverlay } from './CalScheduleOverlay';
+
+// ── Candidate picker — job filter → candidate list → open Cal overlay ─────────
+
+interface PickerProps {
+  jobs: Job[];
+  candidates: Candidate[];
+  onSelect: (candidate: Candidate) => void;
+  onClose: () => void;
+}
+
+function CalCandidatePicker({ jobs, candidates, onSelect, onClose }: PickerProps) {
+  const [selectedJobId, setSelectedJobId] = useState<string>(jobs[0]?.id ?? '');
+  const [search, setSearch] = useState('');
+
+  const filtered = candidates.filter(c => {
+    const matchesJob = selectedJobId ? (c as any).jobId === selectedJobId : true;
+    const q = search.toLowerCase();
+    const matchesSearch = !q || c.fullName.toLowerCase().includes(q) || c.title?.toLowerCase().includes(q);
+    return matchesJob && matchesSearch;
+  });
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-40 flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.35)' }}
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <motion.div
+        initial={{ scale: 0.96, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.96, opacity: 0 }}
+        transition={{ duration: 0.15 }}
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden"
+        style={{ maxHeight: '80vh' }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <div>
+            <p className="text-[15px] font-semibold text-gray-900">Schedule Interview</p>
+            <p className="text-[12px] text-gray-400 mt-0.5">Select a candidate to schedule with</p>
+          </div>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Job filter */}
+        {jobs.length > 1 && (
+          <div className="px-5 pt-4 pb-2 shrink-0">
+            <label className="block text-[11px] font-medium text-gray-500 mb-1.5 uppercase tracking-wider">
+              <Briefcase className="w-3 h-3 inline mr-1" />
+              Job post
+            </label>
+            <select
+              value={selectedJobId}
+              onChange={e => setSelectedJobId(e.target.value)}
+              className="w-full px-3 py-2 text-[13px] border border-gray-200 rounded-lg focus:outline-none focus:border-orange-300 focus:ring-2 focus:ring-orange-100 bg-white"
+            >
+              <option value="">All jobs</option>
+              {jobs.map(j => (
+                <option key={j.id} value={j.id}>{j.title}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Search */}
+        <div className="px-5 pt-3 pb-2 shrink-0">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search candidates…"
+              className="w-full pl-9 pr-3 py-2 text-[13px] border border-gray-200 rounded-lg focus:outline-none focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+            />
+          </div>
+        </div>
+
+        {/* Candidate list */}
+        <div className="flex-1 overflow-y-auto px-3 pb-3">
+          {filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10 text-center">
+              <User className="w-8 h-8 text-gray-200 mb-2" />
+              <p className="text-[13px] text-gray-400">No candidates found</p>
+              {selectedJobId && <p className="text-[11px] text-gray-300 mt-1">Try selecting a different job or clearing the search</p>}
+            </div>
+          ) : (
+            <div className="space-y-1 mt-1">
+              {filtered.map(c => (
+                <button
+                  key={c.id}
+                  onClick={() => onSelect(c)}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-orange-50 hover:border-orange-100 border border-transparent transition-all text-left group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center shrink-0 text-[11px] font-bold text-brand">
+                    {c.fullName.split(' ').map((w: string) => w[0]).slice(0, 2).join('')}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-semibold text-gray-900 truncate group-hover:text-brand">{c.fullName}</p>
+                    <p className="text-[11px] text-gray-400 truncate">{c.title} {c.company ? `· ${c.company}` : ''}</p>
+                  </div>
+                  <span className="text-[11px] text-gray-300 group-hover:text-brand shrink-0">Select →</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONTH_NAMES = [
@@ -44,6 +163,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   const [selectedDay, setSelectedDay] = useState(today.getDate());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [showPicker, setShowPicker] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [overlayCandidate, setOverlayCandidate] = useState<Candidate | null>(null);
 
@@ -65,8 +185,12 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
     setSelectedDay(d => Math.min(d, daysInNew));
   };
 
-  const openOverlay = (candidate?: Candidate | null) => {
-    setOverlayCandidate(candidate ?? null);
+  // "Schedule Interview" from the calendar → show the candidate picker first
+  const openOverlay = () => setShowPicker(true);
+
+  const handlePickerSelect = (candidate: Candidate) => {
+    setShowPicker(false);
+    setOverlayCandidate(candidate);
     setShowOverlay(true);
   };
 
@@ -308,6 +432,17 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {showPicker && calUrl && (
+          <CalCandidatePicker
+            jobs={jobs}
+            candidates={candidates}
+            onSelect={handlePickerSelect}
+            onClose={() => setShowPicker(false)}
+          />
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {showOverlay && calUrl && (
