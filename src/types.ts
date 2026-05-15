@@ -3,7 +3,6 @@ export enum View {
   CANDIDATE_LIST = 'candidate-list',
   CANDIDATE_DETAIL = 'candidate-detail',
   JOBS_POSTED = 'jobs-posted',
-  OUTREACH = 'outreach',
   CALENDAR = 'calendar',
   MARKET_INTEL = 'market-intel',
   INTEGRATIONS = 'integrations',
