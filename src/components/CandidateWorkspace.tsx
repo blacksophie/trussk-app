@@ -189,10 +189,24 @@ export default function CandidateWorkspace({
 
                 <div className="flex items-center gap-2">
                   <div className="flex border border-gray-100 rounded-lg overflow-hidden">
-                    <button className="p-2 hover:bg-gray-50 transition-colors border-r border-gray-100">
+                    <button
+                      onClick={() => {
+                        const idx = filteredCandidates.findIndex(c => c.id === selectedCandidate.id);
+                        if (idx > 0) onSelectCandidate(filteredCandidates[idx - 1]);
+                      }}
+                      disabled={filteredCandidates.findIndex(c => c.id === selectedCandidate.id) === 0}
+                      className="p-2 hover:bg-gray-50 transition-colors border-r border-gray-100 disabled:opacity-30"
+                    >
                       <ChevronLeft className="w-3.5 h-3.5 text-gray-400" />
                     </button>
-                    <button className="p-2 hover:bg-gray-50 transition-colors">
+                    <button
+                      onClick={() => {
+                        const idx = filteredCandidates.findIndex(c => c.id === selectedCandidate.id);
+                        if (idx < filteredCandidates.length - 1) onSelectCandidate(filteredCandidates[idx + 1]);
+                      }}
+                      disabled={filteredCandidates.findIndex(c => c.id === selectedCandidate.id) === filteredCandidates.length - 1}
+                      className="p-2 hover:bg-gray-50 transition-colors disabled:opacity-30"
+                    >
                       <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
                     </button>
                   </div>
