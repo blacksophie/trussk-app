@@ -29,10 +29,12 @@ import {
   TrendingUp,
   Shield,
   Zap,
-  BarChart3
+  BarChart3,
+  CalendarDays,
 } from 'lucide-react';
 import { Candidate, Stage } from '../types';
 import { COMPANY_SIGNALS } from '../data/signals';
+import { CalScheduleOverlay } from './CalScheduleOverlay';
 
 interface CandidateWorkspaceProps {
   jobTitle?: string;
@@ -41,6 +43,7 @@ interface CandidateWorkspaceProps {
   onSelectCandidate: (candidate: Candidate) => void;
   onUpdateStage: (id: string, stage: Stage) => void;
   onSaveNotes: (id: string, notes: string) => void;
+  calUrl?: string;
 }
 
 export default function CandidateWorkspace({
@@ -49,11 +52,13 @@ export default function CandidateWorkspace({
   selectedCandidate,
   onSelectCandidate,
   onUpdateStage,
-  onSaveNotes
+  onSaveNotes,
+  calUrl,
 }: CandidateWorkspaceProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'details' | 'resume' | 'pipeline' | 'interviews' | 'intel'>('details');
   const [localNotes, setLocalNotes] = useState<string>('');
+  const [showScheduleOverlay, setShowScheduleOverlay] = useState(false);
 
   const companySignal = useMemo(() => {
     if (!selectedCandidate) return null;
@@ -224,6 +229,15 @@ export default function CandidateWorkspace({
                     <Mail className="w-3.5 h-3.5" />
                     Email
                   </a>
+                  <button
+                    onClick={() => setShowScheduleOverlay(true)}
+                    disabled={!calUrl}
+                    title={calUrl ? `Schedule interview with ${selectedCandidate.firstName}` : 'Add your Cal.com URL in Integrations first'}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-brand/30 bg-orange-50 hover:bg-orange-100 transition-all text-xs font-medium text-brand disabled:opacity-40 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-transparent disabled:text-gray-400"
+                  >
+                    <CalendarDays className="w-3.5 h-3.5" />
+                    Schedule
+                  </button>
                 </div>
               </div>
 
@@ -648,6 +662,16 @@ export default function CandidateWorkspace({
           </div>
         )}
       </div>
+
+      <AnimatePresence>
+        {showScheduleOverlay && calUrl && (
+          <CalScheduleOverlay
+            calUrl={calUrl}
+            candidate={selectedCandidate}
+            onClose={() => setShowScheduleOverlay(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

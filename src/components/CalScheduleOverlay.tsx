@@ -16,15 +16,27 @@ export const CalScheduleOverlay: React.FC<Props> = ({ calUrl, candidate, onClose
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
+  // Append candidate name + email as Cal.com prefill query params
+  const iframeSrc = (() => {
+    try {
+      const url = new URL(calUrl);
+      if (candidate?.fullName) url.searchParams.set('name', candidate.fullName);
+      if (candidate?.email) url.searchParams.set('email', candidate.email);
+      return url.toString();
+    } catch {
+      return calUrl;
+    }
+  })();
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.98 }}
       transition={{ duration: 0.18 }}
-      className="fixed inset-0 z-50 flex flex-col bg-white"
+      className="fixed inset-0 z-50 flex flex-col bg-white overflow-hidden"
     >
-      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0 bg-white shadow-sm">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0 bg-white shadow-sm">
         <div>
           <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Scheduling interview with</p>
           <p className="text-[17px] font-semibold text-gray-900 mt-0.5">
@@ -44,7 +56,7 @@ export const CalScheduleOverlay: React.FC<Props> = ({ calUrl, candidate, onClose
       </div>
 
       <iframe
-        src={calUrl}
+        src={iframeSrc}
         className="flex-1 w-full border-0"
         allow="payment"
         title="Schedule interview"

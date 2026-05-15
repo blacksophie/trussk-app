@@ -498,6 +498,7 @@ function AppContent() {
                 onSelectCandidate={handleSelectCandidate}
                 onUpdateStage={handleUpdateCandidateStage}
                 onSaveNotes={handleSaveNotes}
+                calUrl={calUrl}
               />
             </motion.div>
           )}
