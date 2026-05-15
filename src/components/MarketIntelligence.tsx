@@ -80,11 +80,11 @@ export const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
       
       return {
         wages: [
-          { name: '10th', value: parseInt(blsData.Pct10) || 120000, label: 'Entry' },
-          { name: '25th', value: parseInt(blsData.Pct25) || 145000, label: 'Standard' },
-          { name: 'Median', value: parseInt(blsData.Median) || 165000, label: 'Market Avg' },
-          { name: '75th', value: parseInt(blsData.Pct75) || 185000, label: 'Highly Exp' },
-          { name: '90th', value: parseInt(blsData.Pct90) || 210000, label: 'Industry Elite' },
+          { name: '10th', value: parseInt(blsData.Pct10, 10) || 120000, label: 'Entry' },
+          { name: '25th', value: parseInt(blsData.Pct25, 10) || 145000, label: 'Standard' },
+          { name: 'Median', value: parseInt(blsData.Median, 10) || 165000, label: 'Market Avg' },
+          { name: '75th', value: parseInt(blsData.Pct75, 10) || 185000, label: 'Highly Exp' },
+          { name: '90th', value: parseInt(blsData.Pct90, 10) || 210000, label: 'Industry Elite' },
         ],
         analysis: {
           percentile: data.marketAnalysis?.percentileRank || 87,
