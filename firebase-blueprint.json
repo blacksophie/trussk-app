@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Candidate": {
+      "title": "Candidate",
+      "description": "Details of a candidate sourced for heavy civil and infrastructure roles.",
+      "type": "object",
+      "properties": {
+        "rank": { "type": "number" },
+        "priority": { "type": "string" },
+        "firstName": { "type": "string" },
+        "fullName": { "type": "string" },
+        "title": { "type": "string" },
+        "company": { "type": "string" },
+        "location": { "type": "string" },
+        "tenure": { "type": "string" },
+        "yearsExperience": { "type": "string" },
+        "currentPosition": { "type": "string" },
+        "linkedInUrl": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "driveTime": { "type": "string" },
+        "fitNotes": { "type": "string" },
+        "validationNotes": { "type": "string" },
+        "outreachVariant": { "type": "string" },
+        "personalization": { "type": "string" },
+        "score": { "type": "number" },
+        "about": { "type": "string" },
+        "certifications": { "type": "string" },
+        "topSkills": { "type": "string" },
+        "emailConfidence": { "type": "string" },
+        "personalEmail": { "type": "string" },
+        "liActivity": { "type": "string" },
+        "stage": { "type": "string", "enum": ["Sourced", "Initial Screen", "Technical", "On-site", "Offer"] },
+        "jobId": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["fullName", "stage", "userId"]
+    },
+    "Job": {
+      "title": "Job",
+      "description": "A job posting in the heavy civil and infrastructure industry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "location": { "type": "string" },
+        "description": { "type": "string" },
+        "postedAt": { "type": "string", "format": "date-time" },
+        "industry": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["title", "location", "userId"]
+    }
+  },
+  "firestore": {
+    "jobs": {
+      "schema": { "$ref": "#/entities/Job" },
+      "description": "Collection of jobs posted by users."
+    },
+    "candidates": {
+      "schema": { "$ref": "#/entities/Candidate" },
+      "description": "Collection of candidates sourced by users."
+    }
+  }
+}

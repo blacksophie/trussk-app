@@ -1,0 +1,12 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Firebase service account key — contains private key, NEVER commit
+firebase-admin.json
+functions/.env

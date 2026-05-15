@@ -1,0 +1,296 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner "Global Navigation Menu" [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - button "Open menu" [ref=e12] [cursor=pointer]:
+            - img [ref=e13]
+          - link "Homepage (g then d)" [ref=e15] [cursor=pointer]:
+            - /url: /
+            - img [ref=e16]
+        - button "Search or jump to… (forward slash)" [ref=e19] [cursor=pointer]:
+          - img [ref=e20]
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - generic [ref=e26]:
+              - link "Chat with Copilot" [ref=e28] [cursor=pointer]:
+                - /url: /copilot
+                - img [ref=e29]
+              - button "Open Copilot…" [ref=e33] [cursor=pointer]:
+                - generic:
+                  - img
+            - button "Create new..." [ref=e35] [cursor=pointer]:
+              - generic [ref=e36]:
+                - generic:
+                  - img
+              - generic:
+                - img
+            - generic [ref=e37]:
+              - link "All issues (g then i)" [ref=e38] [cursor=pointer]:
+                - /url: /issues
+                - img [ref=e39]
+              - link "All pull requests (g then p)" [ref=e42] [cursor=pointer]:
+                - /url: /pulls
+                - img [ref=e43]
+              - link "All repositories" [ref=e45] [cursor=pointer]:
+                - /url: /repos
+                - img [ref=e46]
+          - link "You have unread notifications (g then n)" [ref=e48] [cursor=pointer]:
+            - /url: /notifications
+            - img [ref=e49]
+          - button "Open user navigation menu" [ref=e52] [cursor=pointer]:
+            - img "User avatar" [ref=e53]
+  - main [ref=e56]:
+    - generic [ref=e57]:
+      - generic "aimogga (aimogga) settings" [ref=e58]:
+        - generic [ref=e59]:
+          - img "@aimogga" [ref=e60]
+          - generic [ref=e61]:
+            - heading "aimogga (aimogga) settings" [level=1] [ref=e62]:
+              - link "aimogga (aimogga)" [ref=e63] [cursor=pointer]:
+                - /url: /aimogga
+              - generic [ref=e64]: settings
+            - paragraph [ref=e346]: Your personal account
+        - link "Go to your personal profile" [ref=e68] [cursor=pointer]:
+          - /url: /aimogga
+      - generic [ref=e69]:
+        - navigation "User settings" [ref=e73]:
+          - list [ref=e75]:
+            - listitem [ref=e76]:
+              - link "Public profile" [ref=e77] [cursor=pointer]:
+                - /url: /settings/profile
+                - generic:
+                  - img
+                - generic [ref=e78]: Public profile
+            - listitem [ref=e79]:
+              - link "Account" [ref=e80] [cursor=pointer]:
+                - /url: /settings/admin
+                - generic:
+                  - img
+                - generic [ref=e81]: Account
+            - listitem [ref=e82]:
+              - link "Appearance" [ref=e83] [cursor=pointer]:
+                - /url: /settings/appearance
+                - generic:
+                  - img
+                - generic [ref=e84]: Appearance
+            - listitem [ref=e85]:
+              - link "Accessibility" [ref=e86] [cursor=pointer]:
+                - /url: /settings/accessibility
+                - generic:
+                  - img
+                - generic [ref=e87]: Accessibility
+            - listitem [ref=e88]:
+              - link "Notifications" [ref=e89] [cursor=pointer]:
+                - /url: /settings/notifications
+                - generic:
+                  - img
+                - generic [ref=e90]: Notifications
+            - listitem [ref=e91]
+            - listitem [ref=e92]:
+              - generic [ref=e95]:
+                - heading "Access" [level=2] [ref=e97]
+                - list "Access" [ref=e98]:
+                  - listitem [ref=e99]:
+                    - button "Billing and licensing" [ref=e100] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e101]: Billing and licensing
+                      - generic:
+                        - img
+                  - listitem [ref=e102]:
+                    - link "Emails" [ref=e103] [cursor=pointer]:
+                      - /url: /settings/emails
+                      - generic:
+                        - img
+                      - generic [ref=e104]: Emails
+                  - listitem [ref=e105]:
+                    - link "Password and authentication" [ref=e106] [cursor=pointer]:
+                      - /url: /settings/security
+                      - generic:
+                        - img
+                      - generic [ref=e107]: Password and authentication
+                  - listitem [ref=e108]:
+                    - link "Sessions" [ref=e109] [cursor=pointer]:
+                      - /url: /settings/sessions
+                      - generic:
+                        - img
+                      - generic [ref=e110]: Sessions
+                  - listitem [ref=e111]:
+                    - link "SSH and GPG keys" [ref=e112] [cursor=pointer]:
+                      - /url: /settings/keys
+                      - generic:
+                        - img
+                      - generic [ref=e113]: SSH and GPG keys
+                  - listitem [ref=e114] [cursor=pointer]:
+                    - link "Organizations" [active] [ref=e115]:
+                      - /url: /settings/organizations
+                      - generic:
+                        - img
+                      - generic [ref=e116]: Organizations
+                  - listitem [ref=e117]:
+                    - link "Enterprises" [ref=e118] [cursor=pointer]:
+                      - /url: /settings/enterprises
+                      - generic:
+                        - generic:
+                          - img
+                      - generic [ref=e119]: Enterprises
+                  - listitem [ref=e120]:
+                    - button "Moderation" [ref=e121] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e122]: Moderation
+                      - generic:
+                        - img
+            - listitem [ref=e123]
+            - listitem [ref=e124]:
+              - generic [ref=e127]:
+                - heading "Code, planning, and automation" [level=2] [ref=e129]
+                - list "Code, planning, and automation" [ref=e130]:
+                  - listitem [ref=e131]:
+                    - link "Repositories" [ref=e132] [cursor=pointer]:
+                      - /url: /settings/repositories
+                      - generic:
+                        - img
+                      - generic [ref=e133]: Repositories
+                  - listitem [ref=e134]:
+                    - link "Codespaces" [ref=e135] [cursor=pointer]:
+                      - /url: /settings/codespaces
+                      - generic:
+                        - img
+                      - generic [ref=e136]: Codespaces
+                  - listitem [ref=e137]:
+                    - link "Models Preview feature" [ref=e138] [cursor=pointer]:
+                      - /url: /settings/models
+                      - generic:
+                        - img
+                      - generic [ref=e139]: Models
+                      - generic:
+                        - generic "Preview feature": Preview
+                  - listitem [ref=e140]:
+                    - link "Packages" [ref=e141] [cursor=pointer]:
+                      - /url: /settings/packages
+                      - generic:
+                        - img
+                      - generic [ref=e142]: Packages
+                  - listitem [ref=e143]:
+                    - button "Copilot" [ref=e144] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e145]: Copilot
+                      - generic:
+                        - img
+                  - listitem [ref=e146]:
+                    - link "Pages" [ref=e147] [cursor=pointer]:
+                      - /url: /settings/pages
+                      - generic:
+                        - img
+                      - generic [ref=e148]: Pages
+                  - listitem [ref=e149]:
+                    - link "Saved replies" [ref=e150] [cursor=pointer]:
+                      - /url: /settings/replies
+                      - generic:
+                        - img
+                      - generic [ref=e151]: Saved replies
+            - listitem [ref=e152]
+            - listitem [ref=e153]:
+              - generic [ref=e156]:
+                - heading "Security" [level=2] [ref=e158]
+                - list "Security" [ref=e159]:
+                  - listitem [ref=e160]:
+                    - link "Code security" [ref=e161] [cursor=pointer]:
+                      - /url: /settings/security_analysis
+                      - generic:
+                        - img
+                      - generic [ref=e162]: Code security
+            - listitem [ref=e163]
+            - listitem [ref=e164]:
+              - generic [ref=e167]:
+                - heading "Integrations" [level=3] [ref=e169]
+                - list "Integrations" [ref=e170]:
+                  - listitem [ref=e171]:
+                    - link "Applications" [ref=e172] [cursor=pointer]:
+                      - /url: /settings/installations
+                      - generic:
+                        - img
+                      - generic [ref=e173]: Applications
+                  - listitem [ref=e174]:
+                    - link "Scheduled reminders" [ref=e175] [cursor=pointer]:
+                      - /url: /settings/reminders
+                      - generic:
+                        - img
+                      - generic [ref=e176]: Scheduled reminders
+            - listitem [ref=e177]
+            - listitem [ref=e178]:
+              - generic [ref=e181]:
+                - heading "Archives" [level=2] [ref=e183]
+                - list "Archives" [ref=e184]:
+                  - listitem [ref=e185]:
+                    - link "Security log" [ref=e186] [cursor=pointer]:
+                      - /url: /settings/security-log
+                      - generic:
+                        - img
+                      - generic [ref=e187]: Security log
+                  - listitem [ref=e188]:
+                    - link "Sponsorship log" [ref=e189] [cursor=pointer]:
+                      - /url: /settings/sponsors-log
+                      - generic:
+                        - img
+                      - generic [ref=e190]: Sponsorship log
+            - listitem [ref=e191]
+            - listitem [ref=e192]:
+              - link "Developer settings" [ref=e193] [cursor=pointer]:
+                - /url: /settings/apps
+                - generic:
+                  - img
+                - generic [ref=e194]: Developer settings
+        - generic [ref=e198]:
+          - generic [ref=e347]:
+            - heading "Organizations" [level=2] [ref=e348]
+            - link "New organization" [ref=e350] [cursor=pointer]:
+              - /url: /account/organizations/new
+              - generic [ref=e352]: New organization
+          - heading "You are not a member of any organizations." [level=2] [ref=e355]
+          - heading "Move to an organization" [level=2] [ref=e357]
+          - paragraph [ref=e358]: Your personal account cannot be converted to an organization. You must create a new organization and transfer your repositories and projects to it instead. You can then rename your personal account and the organization if you want your organization to have the same name that you are currently using for your personal account.
+          - link "Move work to an organization" [ref=e359] [cursor=pointer]:
+            - /url: /move_work/new
+            - generic [ref=e361]: Move work to an organization
+  - contentinfo [ref=e312]:
+    - heading "Footer" [level=2] [ref=e313]
+    - generic [ref=e314]:
+      - generic [ref=e315]:
+        - link "GitHub Homepage" [ref=e316] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e317]
+        - generic [ref=e319]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e320]:
+        - heading "Footer navigation" [level=3] [ref=e321]
+        - list "Footer navigation" [ref=e322]:
+          - listitem [ref=e323]:
+            - link "Terms" [ref=e324] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e325]:
+            - link "Privacy" [ref=e326] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e327]:
+            - link "Security" [ref=e328] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e329]:
+            - link "Status" [ref=e330] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e331]:
+            - link "Community" [ref=e332] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e333]:
+            - link "Docs" [ref=e334] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e335]:
+            - link "Contact" [ref=e336] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e337]:
+            - button "Manage cookies" [ref=e339] [cursor=pointer]
+          - listitem [ref=e340]:
+            - button "Do not share my personal information" [ref=e342] [cursor=pointer]

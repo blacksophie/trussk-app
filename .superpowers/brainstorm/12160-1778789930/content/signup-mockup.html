@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trussk Auth Mockup</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #111; }
+
+  .flow-nav {
+    display: flex; gap: 8px; padding: 16px 24px; background: #1a1a1a;
+    border-bottom: 1px solid #333; align-items: center; flex-wrap: wrap;
+  }
+  .flow-btn {
+    padding: 6px 16px; border-radius: 20px; border: 1px solid #444;
+    background: transparent; color: #aaa; cursor: pointer; font-size: 12px;
+    transition: all 0.2s;
+  }
+  .flow-btn.active { background: #f97316; color: white; border-color: #f97316; font-weight: 600; }
+  .flow-btn:hover:not(.active) { border-color: #f97316; color: #f97316; }
+
+  .screen { display: none; }
+  .screen.active { display: flex; }
+
+  /* ===== SIGN UP / SIGN IN ===== */
+  .auth-screen {
+    height: calc(100vh - 53px);
+    flex-direction: row;
+  }
+  .auth-left {
+    width: 42%; min-width: 380px; background: #fff;
+    display: flex; flex-direction: column; padding: 40px 48px;
+    position: relative;
+  }
+  .auth-logo {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 48px;
+  }
+  .auth-logo-mark {
+    width: 32px; height: 32px; background: #f97316;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  }
+  .auth-logo-mark svg { width: 18px; height: 18px; fill: white; }
+  .auth-logo-text { font-size: 18px; font-weight: 700; color: #111; letter-spacing: -0.5px; }
+  .auth-form-area { flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 360px; }
+  .auth-title { font-size: 30px; font-weight: 700; color: #111; margin-bottom: 8px; letter-spacing: -0.5px; }
+  .auth-subtitle { font-size: 14px; color: #666; margin-bottom: 32px; line-height: 1.5; }
+  .sso-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 11px 16px; border-radius: 8px;
+    border: 1.5px solid #e5e7eb; background: white;
+    font-size: 14px; font-weight: 500; color: #374151; cursor: pointer;
+    transition: all 0.15s; margin-bottom: 10px;
+  }
+  .sso-btn:hover { border-color: #f97316; background: #fff8f5; }
+  .sso-btn img { width: 18px; height: 18px; }
+  .sso-row { display: flex; gap: 10px; }
+  .sso-row .sso-btn { flex: 1; margin-bottom: 0; font-size: 13px; }
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 20px 0; color: #9ca3af; font-size: 12px;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px; background: #e5e7eb;
+  }
+  .field-label { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+  .field-wrap { position: relative; margin-bottom: 16px; }
+  .field-wrap input {
+    width: 100%; padding: 10px 14px 10px 38px;
+    border: 1.5px solid #e5e7eb; border-radius: 8px;
+    font-size: 14px; color: #111; background: white;
+    outline: none; transition: border-color 0.15s;
+  }
+  .field-wrap input:focus { border-color: #f97316; }
+  .field-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: #9ca3af; font-size: 15px;
+  }
+  .cta-btn {
+    width: 100%; padding: 11px; background: #f97316; color: white;
+    border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap-8px;
+    transition: opacity 0.15s; margin-top: 4px;
+  }
+  .cta-btn:hover { opacity: 0.9; }
+  .auth-footer { margin-top: 20px; text-align: center; font-size: 13px; color: #666; }
+  .auth-footer a { color: #f97316; font-weight: 500; text-decoration: none; }
+  .auth-right {
+    flex: 1; background: #f97316;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .auth-right-inner {
+    /* Concentric circle decoration like Himalayas but in orange */
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 60% 40%, #fb923c 0%, #f97316 40%, #ea580c 70%, #c2410c 100%);
+  }
+  .circle {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .auth-right-text {
+    position: relative; z-index: 2; text-align: center; padding: 40px; color: white;
+  }
+  .auth-right-text h3 {
+    font-size: 26px; font-weight: 700; margin-bottom: 12px;
+    letter-spacing: -0.5px; line-height: 1.2;
+  }
+  .auth-right-text p { font-size: 15px; opacity: 0.85; line-height: 1.6; max-width: 280px; }
+
+  /* ===== ONBOARDING ===== */
+  .onboard-screen {
+    height: calc(100vh - 53px); background: #fff;
+    align-items: center; justify-content: center; flex-direction: column;
+    padding: 40px 20px;
+  }
+  .onboard-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; }
+  .onboard-logo-mark {
+    width: 48px; height: 48px; background: #f97316; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; position: relative;
+  }
+  .onboard-logo-mark::after {
+    content: '✓'; position: absolute; bottom: -4px; right: -4px;
+    width: 16px; height: 16px; background: #22c55e; border-radius: 50%;
+    font-size: 9px; color: white; display: flex; align-items: center; justify-content: center;
+    border: 2px solid white;
+  }
+  .onboard-logo svg { width: 24px; height: 24px; fill: white; }
+  .onboard-title { font-size: 28px; font-weight: 700; color: #111; text-align: center; margin-bottom: 8px; letter-spacing: -0.5px; }
+  .onboard-subtitle { font-size: 15px; color: #666; text-align: center; margin-bottom: 8px; }
+  .onboard-url { font-size: 14px; color: #f97316; text-decoration: underline; margin-bottom: 32px; text-align: center; }
+  .onboard-card {
+    width: 100%; max-width: 480px; border: 1.5px solid #e5e7eb;
+    border-radius: 12px; padding: 28px;
+  }
+  .onboard-field-row { display: flex; gap: 10px; margin-bottom: 14px; }
+  .onboard-field { flex: 1; }
+  .onboard-field label { display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 5px; }
+  .onboard-field input, .onboard-field select {
+    width: 100%; padding: 9px 12px; border: 1.5px solid #e5e7eb;
+    border-radius: 8px; font-size: 13px; color: #111; background: white; outline: none;
+  }
+  .onboard-field input:focus, .onboard-field select:focus { border-color: #f97316; }
+  .invite-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
+  .invite-email {
+    flex: 1; display: flex; align-items: center;
+    border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 0 12px;
+  }
+  .invite-email span { color: #9ca3af; font-size: 14px; margin-right: 8px; }
+  .invite-email input {
+    border: none; outline: none; font-size: 13px; color: #111; flex: 1; padding: 9px 0;
+    background: transparent;
+  }
+  .invite-role {
+    display: flex; align-items: center; gap: 6px;
+    border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 9px 12px;
+    font-size: 13px; color: #374151; min-width: 120px; cursor: pointer;
+    background: white;
+  }
+  .add-more { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #374151; cursor: pointer; margin-top: 4px; }
+  .add-more:hover { color: #f97316; }
+  .btn-primary {
+    width: 100%; padding: 12px; background: #f97316; color: white;
+    border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; margin-top: 20px; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary {
+    width: 100%; padding: 12px; background: white; color: #374151;
+    border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-weight: 500;
+    cursor: pointer; margin-top: 10px;
+  }
+  .dots { display: flex; gap: 8px; justify-content: center; margin-top: 32px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #e5e7eb; }
+  .dot.active { background: #f97316; }
+
+  /* ===== WELCOME MODAL ===== */
+  .welcome-screen {
+    height: calc(100vh - 53px); position: relative;
+    background: #f8f9fa; /* simulated dashboard behind */
+  }
+  .dashboard-bg {
+    position: absolute; inset: 0; opacity: 0.3;
+    display: flex;
+  }
+  .db-sidebar { width: 200px; background: #1a1a1a; height: 100%; }
+  .db-main { flex: 1; background: white; padding: 24px; }
+  .db-bar { height: 12px; background: #e5e7eb; border-radius: 4px; margin-bottom: 12px; }
+  .modal-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-box {
+    background: white; border-radius: 16px; padding: 40px 36px;
+    width: 460px; text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+  }
+  .modal-icon {
+    width: 64px; height: 64px; background: #fff8f5; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; font-size: 28px;
+    border: 2px solid #fed7aa;
+  }
+  .modal-title { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 10px; letter-spacing: -0.3px; }
+  .modal-body { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 24px; }
+  .modal-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; background: #f97316; color: white;
+    border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .modal-cta:hover { opacity: 0.9; }
+</style>
+</head>
+<body>
+
+<div class="flow-nav">
+  <span style="color:#aaa;font-size:12px;margin-right:8px;">Preview screens →</span>
+  <button class="flow-btn active" onclick="showScreen('signup')">1. Sign Up</button>
+  <button class="flow-btn" onclick="showScreen('signin')">2. Sign In</button>
+  <button class="flow-btn" onclick="showScreen('company')">3. Company Info</button>
+  <button class="flow-btn" onclick="showScreen('invite')">4. Invite Team</button>
+  <button class="flow-btn" onclick="showScreen('welcome')">5. Welcome Modal</button>
+</div>
+
+<!-- SIGN UP -->
+<div id="signup" class="screen auth-screen active">
+  <div class="auth-left">
+    <div class="auth-logo">
+      <div class="auth-logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <span class="auth-logo-text">trussk</span>
+    </div>
+    <div class="auth-form-area">
+      <div class="auth-title">Sign up</div>
+      <div class="auth-subtitle">Create an account to start hiring infrastructure talent with Trussk.</div>
+      <div class="sso-row">
+        <button class="sso-btn">
+          <img src="https://www.google.com/favicon.ico" alt="G"> Sign up with Google
+        </button>
+        <button class="sso-btn">
+          <img src="https://microsoft.com/favicon.ico" alt="M" style="width:16px;height:16px;"> Sign up with Microsoft
+        </button>
+      </div>
+      <div class="divider">or sign up using email</div>
+      <div class="field-label">Email</div>
+      <div class="field-wrap">
+        <span class="field-icon">✉</span>
+        <input type="email" placeholder="name@company.com">
+      </div>
+      <button class="cta-btn">Continue →</button>
+      <div class="auth-footer">Already have an account? <a href="#">Sign in</a></div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-right-inner"></div>
+    <!-- Concentric circles -->
+    <div class="circle" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-10%,-50%)"></div>
+    <div class="circle" style="width:450px;height:450px;top:50%;left:50%;transform:translate(-5%,-50%)"></div>
+    <div class="circle" style="width:300px;height:300px;top:50%;left:50%;transform:translate(2%,-50%)"></div>
+    <div class="circle" style="width:160px;height:160px;top:50%;left:50%;transform:translate(12%,-50%);background:rgba(255,255,255,0.12)"></div>
+    <div class="auth-right-text">
+      <h3>Infrastructure<br>Recruiting</h3>
+      <p>Hire the talent others can't find. Describe the role — AI finds, scores, and ranks the right candidates in minutes.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN IN -->
+<div id="signin" class="screen auth-screen">
+  <div class="auth-left">
+    <div class="auth-logo">
+      <div class="auth-logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <span class="auth-logo-text">trussk</span>
+    </div>
+    <div class="auth-form-area">
+      <div class="auth-title">Sign in</div>
+      <div class="auth-subtitle">Welcome back. Sign in to continue managing your pipeline.</div>
+      <div class="sso-row">
+        <button class="sso-btn">
+          <img src="https://www.google.com/favicon.ico" alt="G"> Sign in with Google
+        </button>
+        <button class="sso-btn">
+          <img src="https://microsoft.com/favicon.ico" alt="M" style="width:16px;height:16px;"> Sign in with Microsoft
+        </button>
+      </div>
+      <div class="divider">or sign in with email</div>
+      <div class="field-label">Email</div>
+      <div class="field-wrap">
+        <span class="field-icon">✉</span>
+        <input type="email" placeholder="name@company.com">
+      </div>
+      <button class="cta-btn">Continue →</button>
+      <div class="auth-footer">Don't have an account? <a href="#">Sign up</a></div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-right-inner"></div>
+    <div class="circle" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-10%,-50%)"></div>
+    <div class="circle" style="width:450px;height:450px;top:50%;left:50%;transform:translate(-5%,-50%)"></div>
+    <div class="circle" style="width:300px;height:300px;top:50%;left:50%;transform:translate(2%,-50%)"></div>
+    <div class="circle" style="width:160px;height:160px;top:50%;left:50%;transform:translate(12%,-50%);background:rgba(255,255,255,0.12)"></div>
+    <div class="auth-right-text">
+      <h3>Infrastructure<br>Recruiting</h3>
+      <p>Hire the talent others can't find. Describe the role — AI finds, scores, and ranks the right candidates in minutes.</p>
+    </div>
+  </div>
+</div>
+
+<!-- COMPANY INFO (Step 1 of onboarding) -->
+<div id="company" class="screen onboard-screen">
+  <div class="onboard-logo">
+    <div class="onboard-logo-mark">
+      <svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:white;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+  </div>
+  <div class="onboard-title">Tell us about your company</div>
+  <div class="onboard-subtitle">Help us tailor Trussk to your hiring needs.</div>
+  <div class="onboard-url" style="color:#9ca3af;font-size:13px;margin-bottom:28px;">trussk.io/onboarding/company</div>
+  <div class="onboard-card">
+    <div class="onboard-field-row">
+      <div class="onboard-field" style="flex:2">
+        <label>Company Name</label>
+        <input type="text" placeholder="Manatee Construction Group">
+      </div>
+      <div class="onboard-field">
+        <label>Industry</label>
+        <select><option>Heavy Civil</option><option>Infrastructure</option><option>Utilities</option></select>
+      </div>
+    </div>
+    <div class="onboard-field-row">
+      <div class="onboard-field">
+        <label>Company Size</label>
+        <select><option>1–10</option><option>11–50</option><option selected>51–200</option><option>200+</option></select>
+      </div>
+      <div class="onboard-field">
+        <label>Your Role</label>
+        <select><option>Recruiter</option><option>Hiring Manager</option><option>Founder / CEO</option><option>HR Director</option></select>
+      </div>
+    </div>
+    <button class="btn-primary">Continue →</button>
+    <button class="btn-secondary">I'll do this later</button>
+  </div>
+  <div class="dots" style="margin-top:24px;">
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+
+<!-- INVITE TEAM (Step 2 of onboarding) -->
+<div id="invite" class="screen onboard-screen">
+  <div class="onboard-logo">
+    <div class="onboard-logo-mark">
+      <svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:white;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+  </div>
+  <div class="onboard-title">Invite the rest of your team</div>
+  <div class="onboard-subtitle">Invite your co-workers to collaborate on hiring.</div>
+  <div class="onboard-url" style="color:#9ca3af;font-size:13px;margin-bottom:28px;">trussk.io/onboarding/invite</div>
+  <div class="onboard-card">
+    <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:14px;">Invite co-workers to Trussk</div>
+    <div class="invite-row">
+      <div class="invite-email"><span>✉</span><input type="text" placeholder="Enter email"></div>
+      <div class="invite-role">Recruiter <span style="margin-left:auto;">▾</span></div>
+    </div>
+    <div class="invite-row">
+      <div class="invite-email"><span>✉</span><input type="text" placeholder="Enter email"></div>
+      <div class="invite-role">Recruiter <span style="margin-left:auto;">▾</span></div>
+    </div>
+    <div class="add-more">
+      <span style="font-size:16px;font-weight:300;">+</span> Add more
+    </div>
+    <button class="btn-primary">Send invites</button>
+    <button class="btn-secondary">I'll do this later</button>
+  </div>
+  <div class="dots" style="margin-top:24px;">
+    <div class="dot"></div>
+    <div class="dot active"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+
+<!-- WELCOME MODAL (Step 3 — overlaid on dashboard) -->
+<div id="welcome" class="screen welcome-screen">
+  <div class="dashboard-bg">
+    <div class="db-sidebar"></div>
+    <div class="db-main">
+      <div class="db-bar" style="width:40%"></div>
+      <div class="db-bar" style="width:70%"></div>
+      <div class="db-bar" style="width:55%"></div>
+    </div>
+  </div>
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-icon">🎉</div>
+      <div class="modal-title">Welcome to Trussk</div>
+      <div class="modal-body">You're all set! Start posting jobs and let AI find, score, and rank the right infrastructure candidates for you — in minutes.</div>
+      <button class="modal-cta">Post your first job →</button>
+    </div>
+  </div>
+  <div class="dots" style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot active"></div>
+  </div>
+</div>
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.flow-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

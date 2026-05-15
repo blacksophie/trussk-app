@@ -1,0 +1,159 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e5]:
+          - link "Render" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img "Render" [ref=e8]
+          - button "M My Workspace" [ref=e12] [cursor=pointer]:
+            - generic [ref=e13]:
+              - generic [ref=e14]: M
+              - generic "My Workspace" [ref=e15]
+              - img [ref=e16]
+        - generic [ref=e20]:
+          - navigation [ref=e21]:
+            - list [ref=e22]:
+              - listitem [ref=e23]:
+                - button "New Web Service" [ref=e26] [cursor=pointer]:
+                  - generic [ref=e27]:
+                    - img [ref=e28]
+                    - generic [ref=e30]:
+                      - generic [ref=e31]: New Web Service
+                      - img [ref=e32]
+          - button "Search Command + K" [ref=e35] [cursor=pointer]:
+            - img [ref=e37]
+            - text: Search
+            - generic [ref=e39]:
+              - img [ref=e40]
+              - generic [ref=e42]: Command
+              - generic [ref=e43]: +
+              - generic [ref=e44]: K
+              - generic [ref=e45]: K
+        - generic [ref=e46]:
+          - button "New" [ref=e48] [cursor=pointer]:
+            - generic [ref=e49]:
+              - img [ref=e50]
+              - generic [ref=e52]: New
+          - button "Upgrade" [ref=e54] [cursor=pointer]:
+            - generic [ref=e55]:
+              - img [ref=e56]
+              - generic [ref=e58]: Upgrade
+          - button "Help" [ref=e60] [cursor=pointer]:
+            - img "Help" [ref=e61]
+          - button "g" [ref=e66] [cursor=pointer]:
+            - generic [ref=e68]: g
+      - main [ref=e72]:
+        - heading "New Web Service" [level=1] [ref=e75]
+        - generic [ref=e76]:
+          - generic [ref=e79]: Source Code
+          - generic [ref=e80]:
+            - list [ref=e81]:
+              - listitem [ref=e82]:
+                - tab "Git Provider" [selected] [ref=e83] [cursor=pointer]
+              - listitem [ref=e84]:
+                - tab "Public Git Repository" [ref=e85] [cursor=pointer]
+              - listitem [ref=e86]:
+                - tab "Existing Image" [ref=e87] [cursor=pointer]
+            - tabpanel "Git Provider" [ref=e89]:
+              - generic [ref=e96]:
+                - generic [ref=e97]:
+                  - generic [ref=e100]:
+                    - img
+                    - textbox "Search" [ref=e101]
+                  - generic [ref=e102]:
+                    - button "Credentials (1)" [ref=e103] [cursor=pointer]:
+                      - generic [ref=e105]:
+                        - img [ref=e108]
+                        - img [ref=e112]
+                        - img [ref=e119]
+                      - generic [ref=e124]: Credentials (1)
+                      - img [ref=e125]
+                    - generic [ref=e198]:
+                      - generic [ref=e199]:
+                        - heading "Connected deployment credentials" [level=6] [ref=e200]
+                        - list [ref=e201]:
+                          - listitem [ref=e202]:
+                            - button "aimogga 5 repos" [active] [ref=e203] [cursor=pointer]:
+                              - generic [ref=e204]:
+                                - img [ref=e206]
+                                - generic [ref=e208]: aimogga
+                                - emphasis [ref=e209]: 5 repos
+                                - img [ref=e211]
+                      - generic [ref=e214]:
+                        - heading "Disconnected deployment credentials" [level=6] [ref=e215]
+                        - list [ref=e216]:
+                          - listitem [ref=e217]:
+                            - button "Connect GitLab" [ref=e218] [cursor=pointer]:
+                              - generic [ref=e219]:
+                                - img [ref=e221]
+                                - text: Connect GitLab
+                          - listitem [ref=e226]:
+                            - button "Connect Bitbucket" [ref=e227] [cursor=pointer]:
+                              - generic [ref=e228]:
+                                - img [ref=e230]
+                                - text: Connect Bitbucket
+                - list [ref=e129]:
+                  - listitem [ref=e130]:
+                    - button "GitHub aimogga / steelai Mar 23" [ref=e131] [cursor=pointer]:
+                      - generic [ref=e132]:
+                        - img "GitHub" [ref=e134]
+                        - generic [ref=e136]: aimogga
+                        - generic [ref=e137]: /
+                        - img [ref=e138]
+                        - generic [ref=e140]: steelai
+                      - time [ref=e142]: Mar 23
+                  - listitem [ref=e143]:
+                    - button "GitHub aimogga / enterpriseai Mar 3" [ref=e144] [cursor=pointer]:
+                      - generic [ref=e145]:
+                        - img "GitHub" [ref=e147]
+                        - generic [ref=e149]: aimogga
+                        - generic [ref=e150]: /
+                        - img [ref=e151]
+                        - generic [ref=e153]: enterpriseai
+                      - time [ref=e155]: Mar 3
+                  - listitem [ref=e156]:
+                    - button "GitHub aimogga / openclaw-config Mar 2" [ref=e157] [cursor=pointer]:
+                      - generic [ref=e158]:
+                        - img "GitHub" [ref=e160]
+                        - generic [ref=e162]: aimogga
+                        - generic [ref=e163]: /
+                        - img [ref=e164]
+                        - generic [ref=e166]: openclaw-config
+                      - time [ref=e168]: Mar 2
+                  - listitem [ref=e169]:
+                    - button "GitHub aimogga / rlpscout Feb 27" [ref=e170] [cursor=pointer]:
+                      - generic [ref=e171]:
+                        - img "GitHub" [ref=e173]
+                        - generic [ref=e175]: aimogga
+                        - generic [ref=e176]: /
+                        - img [ref=e177]
+                        - generic [ref=e179]: rlpscout
+                      - time [ref=e181]: Feb 27
+                  - listitem [ref=e182]:
+                    - button "GitHub aimogga / revcycle-ai Feb 14" [ref=e183] [cursor=pointer]:
+                      - generic [ref=e184]:
+                        - img "GitHub" [ref=e186]
+                        - generic [ref=e188]: aimogga
+                        - generic [ref=e189]: /
+                        - img [ref=e190]
+                        - generic [ref=e192]: revcycle-ai
+                      - time [ref=e194]: Feb 14
+    - generic:
+      - generic:
+        - generic: "0 services selected:"
+        - generic:
+          - generic:
+            - button:
+              - generic:
+                - img
+              - generic: Move
+              - img
+      - generic:
+        - separator
+        - generic:
+          - generic:
+            - button:
+              - img
+  - iframe [ref=e95]:
+    

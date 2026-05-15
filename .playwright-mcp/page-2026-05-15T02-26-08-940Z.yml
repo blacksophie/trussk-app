@@ -1,0 +1,156 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e5]:
+          - link "Render" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img "Render" [ref=e8]
+          - button "M My Workspace" [ref=e12] [cursor=pointer]:
+            - generic [ref=e13]:
+              - generic [ref=e14]: M
+              - generic "My Workspace" [ref=e15]
+              - img [ref=e16]
+        - generic [ref=e20]:
+          - navigation [ref=e21]:
+            - list [ref=e22]:
+              - listitem [ref=e23]:
+                - generic [ref=e435]:
+                  - img [ref=e436]
+                  - generic [ref=e441]: Blueprints
+          - button "Search Command + K" [ref=e31] [cursor=pointer]:
+            - img [ref=e33]
+            - text: Search
+            - generic [ref=e35]:
+              - img [ref=e36]
+              - generic [ref=e38]: Command
+              - generic [ref=e39]: +
+              - generic [ref=e40]: K
+              - generic [ref=e41]: K
+        - generic [ref=e42]:
+          - button "New" [ref=e44] [cursor=pointer]:
+            - generic [ref=e45]:
+              - img [ref=e46]
+              - generic [ref=e48]: New
+          - button "Upgrade" [ref=e50] [cursor=pointer]:
+            - generic [ref=e51]:
+              - img [ref=e52]
+              - generic [ref=e54]: Upgrade
+          - button "Help" [ref=e56] [cursor=pointer]:
+            - img "Help" [ref=e57]
+          - button "g" [ref=e62] [cursor=pointer]:
+            - generic [ref=e64]: g
+      - generic [ref=e65]:
+        - navigation [ref=e246]:
+          - separator [ref=e247]
+          - generic [ref=e249]:
+            - list [ref=e250]:
+              - listitem [ref=e251]:
+                - link "Projects" [ref=e252] [cursor=pointer]:
+                  - /url: /
+                  - img [ref=e253]
+                  - generic [ref=e257]: Projects
+              - listitem [ref=e258]:
+                - link "Blueprints" [active] [ref=e259] [cursor=pointer]:
+                  - /url: /blueprints
+                  - img [ref=e260]
+                  - generic [ref=e265]: Blueprints
+              - listitem [ref=e266]:
+                - link "Environment Groups" [ref=e267] [cursor=pointer]:
+                  - /url: /env-groups
+                  - img [ref=e268]
+                  - generic [ref=e274]: Environment Groups
+            - generic [ref=e275]:
+              - generic [ref=e276]: Integrations
+              - list "Integrations" [ref=e277]:
+                - listitem [ref=e278]:
+                  - link "Observability" [ref=e279] [cursor=pointer]:
+                    - /url: /observability
+                    - img [ref=e280]
+                    - generic [ref=e282]: Observability
+                - listitem [ref=e283]:
+                  - link "Webhooks" [ref=e284] [cursor=pointer]:
+                    - /url: /webhooks
+                    - img [ref=e285]
+                    - generic [ref=e289]: Webhooks
+                - listitem [ref=e290]:
+                  - link "Notifications" [ref=e291] [cursor=pointer]:
+                    - /url: /notifications
+                    - img [ref=e292]
+                    - generic [ref=e302]: Notifications
+            - generic [ref=e303]:
+              - generic [ref=e304]: Networking
+              - list "Networking" [ref=e305]:
+                - listitem [ref=e306]:
+                  - link "Private Links" [ref=e307] [cursor=pointer]:
+                    - /url: /private-links
+                    - img [ref=e308]
+                    - generic [ref=e310]: Private Links
+            - generic [ref=e311]:
+              - generic [ref=e312]: Workspace
+              - list "Workspace" [ref=e313]:
+                - listitem [ref=e314]:
+                  - link "Billing" [ref=e315] [cursor=pointer]:
+                    - /url: /w/tea-d83874ojs32c73c5vf1g/billing
+                    - img [ref=e316]
+                    - generic [ref=e319]: Billing
+                - listitem [ref=e320]:
+                  - link "Settings" [ref=e321] [cursor=pointer]:
+                    - /url: /w/tea-d83874ojs32c73c5vf1g/settings
+                    - img [ref=e322]
+                    - generic [ref=e325]: Settings
+          - generic [ref=e327]:
+            - button "Collapse items" [expanded] [ref=e328] [cursor=pointer]:
+              - img [ref=e329]
+            - list "Footer navigation" [ref=e331]:
+              - listitem [ref=e332]:
+                - link "Changelog" [ref=e333] [cursor=pointer]:
+                  - /url: https://render.com/changelog
+                  - img [ref=e334]
+                  - generic [ref=e339]: Changelog
+              - listitem [ref=e340]:
+                - link "Invite a friend" [ref=e341] [cursor=pointer]:
+                  - /url: /invites
+                  - img [ref=e342]
+                  - generic [ref=e344]: Invite a friend
+              - listitem [ref=e345]:
+                - button "Contact support" [ref=e346] [cursor=pointer]:
+                  - img [ref=e347]
+                  - generic [ref=e351]: Contact support
+            - link "Render Status" [ref=e353] [cursor=pointer]:
+              - /url: https://status.render.com
+              - img [ref=e354]
+              - generic [ref=e356]: Render Status
+        - main [ref=e442]:
+          - generic [ref=e444]:
+            - generic [ref=e445]:
+              - generic [ref=e446]: You haven’t created any Blueprint instances yet.
+              - generic [ref=e447]:
+                - text: Use a Blueprint file to define your Render
+                - link "infrastructure-as-code" [ref=e448] [cursor=pointer]:
+                  - /url: https://render.com/docs/infrastructure-as-code
+                - text: . Create, configure, and connect all of your services in one place, with automatic syncing.
+                - link "Learn more." [ref=e449] [cursor=pointer]:
+                  - /url: https://render.com/docs/blueprint-spec
+            - link "New Blueprint Instance" [ref=e450] [cursor=pointer]:
+              - /url: /select-repo?type=blueprint
+              - img [ref=e452]
+              - text: New Blueprint Instance
+    - generic:
+      - generic:
+        - generic: "0 services selected:"
+        - generic:
+          - generic:
+            - button:
+              - generic:
+                - img
+              - generic: Move
+              - img
+      - generic:
+        - separator
+        - generic:
+          - generic:
+            - button:
+              - img
+  - iframe [ref=e241]:
+    

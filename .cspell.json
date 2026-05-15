@@ -1,0 +1,18 @@
+{
+  "version": "0.2",
+  "words": [
+    "Trussk",
+    "Firestore",
+    "sanitise",
+    "sanitiseThread",
+    "sanitiseEvent",
+    "colour",
+    "behaviour",
+    "careeronestop",
+    "mammoth",
+    "multer",
+    "firebase",
+    "anthropic"
+  ],
+  "ignorePaths": ["node_modules", "dist", ".git"]
+}

@@ -1,0 +1,188 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e5]:
+          - link "Render" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img "Render" [ref=e8]
+          - button "M My Workspace" [ref=e12] [cursor=pointer]:
+            - generic [ref=e13]:
+              - generic [ref=e14]: M
+              - generic "My Workspace" [ref=e15]
+              - img [ref=e16]
+        - generic [ref=e20]:
+          - navigation [ref=e21]:
+            - list [ref=e22]:
+              - listitem [ref=e23]:
+                - generic [ref=e24]:
+                  - img [ref=e242]
+                  - generic [ref=e29]: Projects
+          - button "Search Command + K" [ref=e31] [cursor=pointer]:
+            - img [ref=e33]
+            - text: Search
+            - generic [ref=e35]:
+              - img [ref=e36]
+              - generic [ref=e38]: Command
+              - generic [ref=e39]: +
+              - generic [ref=e40]: K
+              - generic [ref=e41]: K
+        - generic [ref=e42]:
+          - button "New" [ref=e44] [cursor=pointer]:
+            - generic [ref=e45]:
+              - img [ref=e46]
+              - generic [ref=e48]: New
+          - button "Upgrade" [ref=e50] [cursor=pointer]:
+            - generic [ref=e51]:
+              - img [ref=e52]
+              - generic [ref=e54]: Upgrade
+          - button "Help" [ref=e56] [cursor=pointer]:
+            - img "Help" [ref=e57]
+          - button "g" [ref=e62] [cursor=pointer]:
+            - generic [ref=e64]: g
+      - generic [ref=e65]:
+        - navigation [ref=e246]:
+          - separator [ref=e247]
+          - generic [ref=e249]:
+            - list [ref=e250]:
+              - listitem [ref=e251]:
+                - link "Projects" [ref=e252] [cursor=pointer]:
+                  - /url: /
+                  - img [ref=e253]
+                  - generic [ref=e257]: Projects
+              - listitem [ref=e258]:
+                - link "Blueprints" [ref=e259] [cursor=pointer]:
+                  - /url: /blueprints
+                  - img [ref=e260]
+                  - generic [ref=e265]: Blueprints
+              - listitem [ref=e266]:
+                - link "Environment Groups" [ref=e267] [cursor=pointer]:
+                  - /url: /env-groups
+                  - img [ref=e268]
+                  - generic [ref=e274]: Environment Groups
+            - generic [ref=e275]:
+              - generic [ref=e276]: Integrations
+              - list "Integrations" [ref=e277]:
+                - listitem [ref=e278]:
+                  - link "Observability" [ref=e279] [cursor=pointer]:
+                    - /url: /observability
+                    - img [ref=e280]
+                    - generic [ref=e282]: Observability
+                - listitem [ref=e283]:
+                  - link "Webhooks" [ref=e284] [cursor=pointer]:
+                    - /url: /webhooks
+                    - img [ref=e285]
+                    - generic [ref=e289]: Webhooks
+                - listitem [ref=e290]:
+                  - link "Notifications" [ref=e291] [cursor=pointer]:
+                    - /url: /notifications
+                    - img [ref=e292]
+                    - generic [ref=e302]: Notifications
+            - generic [ref=e303]:
+              - generic [ref=e304]: Networking
+              - list "Networking" [ref=e305]:
+                - listitem [ref=e306]:
+                  - link "Private Links" [ref=e307] [cursor=pointer]:
+                    - /url: /private-links
+                    - img [ref=e308]
+                    - generic [ref=e310]: Private Links
+            - generic [ref=e311]:
+              - generic [ref=e312]: Workspace
+              - list "Workspace" [ref=e313]:
+                - listitem [ref=e314]:
+                  - link "Billing" [ref=e315] [cursor=pointer]:
+                    - /url: /w/tea-d83874ojs32c73c5vf1g/billing
+                    - img [ref=e316]
+                    - generic [ref=e319]: Billing
+                - listitem [ref=e320]:
+                  - link "Settings" [ref=e321] [cursor=pointer]:
+                    - /url: /w/tea-d83874ojs32c73c5vf1g/settings
+                    - img [ref=e322]
+                    - generic [ref=e325]: Settings
+          - generic [ref=e327]:
+            - button "Collapse items" [expanded] [ref=e328] [cursor=pointer]:
+              - img [ref=e329]
+            - list "Footer navigation" [ref=e331]:
+              - listitem [ref=e332]:
+                - link "Changelog" [ref=e333] [cursor=pointer]:
+                  - /url: https://render.com/changelog
+                  - img [ref=e334]
+                  - generic [ref=e339]: Changelog
+              - listitem [ref=e340]:
+                - link "Invite a friend" [ref=e341] [cursor=pointer]:
+                  - /url: /invites
+                  - img [ref=e342]
+                  - generic [ref=e344]: Invite a friend
+              - listitem [ref=e345]:
+                - button "Contact support" [ref=e346] [cursor=pointer]:
+                  - img [ref=e347]
+                  - generic [ref=e351]: Contact support
+            - link "Render Status" [ref=e353] [cursor=pointer]:
+              - /url: https://status.render.com
+              - img [ref=e354]
+              - generic [ref=e356]: Render Status
+        - main [ref=e357]:
+          - generic [ref=e358]:
+            - heading "Overview" [level=1] [ref=e360]
+            - generic [ref=e362]:
+              - button "Invite your team" [disabled] [ref=e367]:
+                - img [ref=e369]
+                - text: Invite your team
+              - button "New" [ref=e374] [cursor=pointer]:
+                - generic [ref=e375]:
+                  - img [ref=e376]
+                  - generic [ref=e378]: New
+                  - img [ref=e379]
+          - generic [ref=e383]:
+            - generic [ref=e384]:
+              - generic [ref=e385]: You haven't created any services yet.
+              - generic [ref=e386]: Deploy in just a few minutes. Spin up web services, static sites, cron jobs, and more.
+            - generic [ref=e387]:
+              - generic [ref=e389]:
+                - img [ref=e391]
+                - generic [ref=e393]:
+                  - link "Deploy a Web Service" [ref=e394] [cursor=pointer]:
+                    - /url: /web/new
+                    - text: Deploy a Web Service
+                    - img [ref=e396]
+                  - paragraph [ref=e398]: Dynamic web app. Ideal for full-stack apps, API servers, and mobile backends.
+              - generic [ref=e400]:
+                - img [ref=e402]
+                - generic [ref=e405]:
+                  - link "Deploy a Static Site" [ref=e406] [cursor=pointer]:
+                    - /url: /static/new
+                    - text: Deploy a Static Site
+                    - img [ref=e408]
+                  - paragraph [ref=e410]: Static content served over a global CDN. Ideal for frontend, blogs, and content sites.
+              - generic [ref=e412]:
+                - img [ref=e414]
+                - generic [ref=e416]:
+                  - link "Create a Postgres database" [ref=e417] [cursor=pointer]:
+                    - /url: /new/database
+                    - text: Create a Postgres database
+                    - img [ref=e419]
+                  - paragraph [ref=e421]: Relational data storage. Supports point-in-time recovery, read replicas, and high availability.
+              - generic [ref=e423]:
+                - img [ref=e425]
+                - link "Explore all service types" [ref=e431] [cursor=pointer]:
+                  - /url: /new
+                  - text: Explore all service types
+                  - img [ref=e433]
+    - generic:
+      - generic:
+        - generic: "0 services selected:"
+        - generic:
+          - generic:
+            - button:
+              - generic:
+                - img
+              - generic: Move
+              - img
+      - generic:
+        - separator
+        - generic:
+          - generic:
+            - button:
+              - img
+  - iframe [ref=e241]:
+    

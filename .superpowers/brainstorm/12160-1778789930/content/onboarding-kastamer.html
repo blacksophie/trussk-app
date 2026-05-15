@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trussk Onboarding — Kastamer Style</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; }
+
+.flow-nav {
+  display: flex; gap: 8px; padding: 12px 20px; background: #1a1a1a;
+  border-bottom: 1px solid #333; align-items: center;
+}
+.flow-btn {
+  padding: 5px 14px; border-radius: 20px; border: 1px solid #444;
+  background: transparent; color: #aaa; cursor: pointer; font-size: 12px; transition: all 0.2s;
+}
+.flow-btn.active { background: #f97316; color: white; border-color: #f97316; font-weight: 600; }
+.flow-btn:hover:not(.active) { border-color: #f97316; color: #f97316; }
+
+.screen { display: none; }
+.screen.active { display: flex; }
+
+/* ===== ONBOARDING SHELL ===== */
+.onboard-shell {
+  height: calc(100vh - 45px);
+  background: white;
+  flex-direction: column;
+}
+
+/* Top bar */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 28px; border-bottom: 1px solid #f0f0f0;
+  background: white;
+}
+.topbar-logo { display: flex; align-items: center; gap: 8px; }
+.topbar-logomark {
+  width: 28px; height: 28px; background: #f97316; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.topbar-logomark svg { width: 16px; height: 16px; fill: white; }
+.topbar-wordmark { font-size: 15px; font-weight: 700; color: #111; letter-spacing: -0.3px; }
+.topbar-actions { display: flex; align-items: center; gap: 16px; }
+.topbar-user { font-size: 12px; color: #888; }
+.topbar-logout { font-size: 12px; color: #888; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.topbar-logout:hover { color: #f97316; }
+
+/* Info banner */
+.info-banner { display: none; }
+
+/* Body: sidebar + content */
+.onboard-body { display: flex; flex: 1; overflow: hidden; }
+
+/* Left sidebar */
+.sidebar {
+  width: 260px; border-right: 1px solid #f0f0f0;
+  padding: 28px 0; flex-shrink: 0; overflow-y: auto;
+  background: white;
+}
+.sidebar-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 24px; cursor: default; position: relative;
+  transition: background 0.15s;
+}
+.sidebar-step.active { background: #fff8f5; }
+.sidebar-step.active::left { border-left: 3px solid #f97316; }
+.sidebar-step-icon {
+  width: 28px; height: 28px; border-radius: 50%; border: 2px solid #e5e7eb;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  font-size: 11px; color: #9ca3af; margin-top: 1px;
+  background: white; transition: all 0.2s;
+}
+.sidebar-step.active .sidebar-step-icon {
+  border-color: #f97316; background: #fff8f5; color: #f97316; font-weight: 700;
+}
+.sidebar-step.done .sidebar-step-icon {
+  border-color: #22c55e; background: #f0fdf4; color: #22c55e;
+}
+.sidebar-step-text h4 { font-size: 13px; font-weight: 600; color: #111; margin-bottom: 3px; }
+.sidebar-step.active .sidebar-step-text h4 { color: #f97316; }
+.sidebar-step.done .sidebar-step-text h4 { color: #6b7280; }
+.sidebar-step-text p { font-size: 11px; color: #9ca3af; line-height: 1.4; }
+/* Connector line */
+.sidebar-step:not(:last-child)::after {
+  content: ''; position: absolute; left: 37px; bottom: 0; top: 42px;
+  width: 2px; background: #f0f0f0;
+}
+.sidebar-step.done:not(:last-child)::after { background: #bbf7d0; }
+
+/* Main content */
+.main-content {
+  flex: 1; padding: 24px 64px 64px; overflow-y: auto; background: white;
+  display: flex; align-items: center; justify-content: center;
+}
+.main-content-inner {
+  width: 100%; max-width: 520px;
+}
+.step-label {
+  font-size: 11px; font-weight: 700; color: #f97316;
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;
+}
+.step-title { font-size: 26px; font-weight: 700; color: #111; letter-spacing: -0.5px; margin-bottom: 10px; }
+.step-desc { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 32px; max-width: 520px; }
+
+/* Form elements */
+.field-row { display: flex; gap: 16px; margin-bottom: 20px; }
+.field { flex: 1; margin-bottom: 18px; }
+.field label { display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+.field input, .field select {
+  width: 100%; padding: 11px 14px; border: 1.5px solid #e5e7eb;
+  border-radius: 8px; font-size: 14px; color: #111; background: white;
+  outline: none; transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus { border-color: #f97316; }
+.field input::placeholder { color: #9ca3af; }
+
+/* Invite rows */
+.invite-section-label { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 12px; }
+.invite-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+.invite-email-wrap {
+  flex: 1; display: flex; align-items: center;
+  border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 0 12px;
+  background: white; transition: border-color 0.15s;
+}
+.invite-email-wrap:focus-within { border-color: #f97316; }
+.invite-email-wrap span { color: #9ca3af; margin-right: 8px; font-size: 14px; }
+.invite-email-wrap input {
+  border: none; outline: none; font-size: 13px; color: #111;
+  flex: 1; padding: 10px 0; background: transparent;
+}
+.invite-email-wrap input::placeholder { color: #9ca3af; }
+.role-select {
+  display: flex; align-items: center;
+  border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 10px 12px;
+  font-size: 13px; color: #374151; min-width: 130px; cursor: pointer;
+  background: white; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 28px; outline: none;
+}
+.role-select:focus { border-color: #f97316; }
+.add-more-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: #374151; cursor: pointer;
+  background: none; border: none; padding: 4px 0;
+  margin-top: 4px;
+}
+.add-more-btn:hover { color: #f97316; }
+
+/* Nav buttons */
+.nav-buttons {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 36px; padding-top: 24px; border-top: 1px solid #f0f0f0;
+}
+.btn-back {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: #6b7280; cursor: pointer;
+  background: none; border: none; padding: 8px 0;
+}
+.btn-back:hover { color: #374151; }
+.btn-continue {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 22px; background: #f97316; color: white;
+  border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.btn-continue:hover { opacity: 0.9; }
+.btn-skip {
+  font-size: 12px; color: #9ca3af; cursor: pointer;
+  background: none; border: none; text-decoration: underline;
+}
+.btn-skip:hover { color: #6b7280; }
+
+/* Welcome modal */
+.welcome-bg {
+  height: calc(100vh - 45px); position: relative; background: #f8f9fa;
+}
+.db-bg {
+  position: absolute; inset: 0; display: flex; opacity: 1;
+}
+.db-sidebar-bg {
+  width: 220px; background: #111; display: flex; flex-direction: column;
+  padding: 20px 16px; gap: 8px;
+}
+.db-nav-item {
+  height: 32px; border-radius: 6px; background: rgba(255,255,255,0.07);
+  display: flex; align-items: center; padding: 0 12px; gap: 8px;
+}
+.db-nav-item.active { background: rgba(249,115,22,0.2); }
+.db-nav-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); flex-shrink: 0; }
+.db-nav-dot.orange { background: #f97316; }
+.db-nav-line { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.15); flex: 1; }
+.db-main-bg { flex: 1; background: #f9fafb; padding: 28px 32px; }
+.db-header { display: flex; gap: 12px; margin-bottom: 24px; }
+.db-stat { flex: 1; background: white; border-radius: 10px; padding: 16px; border: 1px solid #e5e7eb; }
+.db-stat-num { height: 20px; width: 60%; background: #e5e7eb; border-radius: 4px; margin-bottom: 8px; }
+.db-stat-label { height: 10px; width: 80%; background: #f3f4f6; border-radius: 4px; }
+.db-table { background: white; border-radius: 10px; border: 1px solid #e5e7eb; overflow: hidden; }
+.db-row { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f3f4f6; align-items: center; }
+.db-avatar { width: 28px; height: 28px; border-radius: 50%; background: #e5e7eb; flex-shrink: 0; }
+.db-cell { height: 10px; border-radius: 4px; background: #f3f4f6; }
+.db-badge { height: 20px; width: 60px; border-radius: 20px; background: #dcfce7; flex-shrink: 0; }
+.modal-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-box {
+  background: white; border-radius: 16px; padding: 44px 40px;
+  width: 480px; text-align: center;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+}
+.modal-icon-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 2px solid #fed7aa; background: #fff8f5;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px; font-size: 30px;
+}
+.modal-title { font-size: 24px; font-weight: 700; color: #111; margin-bottom: 12px; letter-spacing: -0.4px; }
+.modal-body { font-size: 14px; color: #6b7280; line-height: 1.7; margin-bottom: 28px; }
+.modal-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px; background: #f97316; color: white;
+  border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.modal-cta:hover { opacity: 0.9; }
+</style>
+</head>
+<body>
+
+<div class="flow-nav">
+  <span style="color:#aaa;font-size:12px;margin-right:4px;">Onboarding screens →</span>
+  <button class="flow-btn active" onclick="show('step1')">Step 1 — Company</button>
+  <button class="flow-btn" onclick="show('step2')">Step 2 — Invite Team</button>
+  <button class="flow-btn" onclick="show('step3')">Step 3 — Welcome</button>
+</div>
+
+<!-- STEP 1: COMPANY INFO -->
+<div id="step1" class="screen onboard-shell active">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="topbar-logomark"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <span class="topbar-wordmark">trussk</span>
+    </div>
+    <div class="topbar-actions">
+      <span class="topbar-user">Logged in as george@trussk.io</span>
+      <span class="topbar-logout">↗ Log out</span>
+    </div>
+  </div>
+  <div class="info-banner">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Get started by setting up your company profile and team.
+  </div>
+  <div class="onboard-body">
+    <div class="sidebar">
+      <div class="sidebar-step done">
+        <div class="sidebar-step-icon">✓</div>
+        <div class="sidebar-step-text">
+          <h4>Create Account</h4>
+          <p>Sign up and verify your email to get started.</p>
+        </div>
+      </div>
+      <div class="sidebar-step active">
+        <div class="sidebar-step-icon">1</div>
+        <div class="sidebar-step-text">
+          <h4>Company Profile</h4>
+          <p>Tell us about your organization and your role.</p>
+        </div>
+      </div>
+      <div class="sidebar-step">
+        <div class="sidebar-step-icon">2</div>
+        <div class="sidebar-step-text">
+          <h4>Invite Your Team</h4>
+          <p>Add co-workers to collaborate on hiring.</p>
+        </div>
+      </div>
+      <div class="sidebar-step">
+        <div class="sidebar-step-icon">3</div>
+        <div class="sidebar-step-text">
+          <h4>Start Hiring</h4>
+          <p>Post your first job and find candidates.</p>
+        </div>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="main-content-inner">
+        <div class="step-label">STEP 1 OF 3</div>
+        <div class="step-title">Tell us about your company</div>
+        <div class="step-desc">Help us tailor Trussk to your hiring needs. This lets us surface the most relevant candidates and market data for your industry.</div>
+        <div class="field">
+          <label>Company Name *</label>
+          <input type="text" placeholder="e.g. Manatee Construction Group">
+        </div>
+        <div class="field">
+          <label>Industry</label>
+          <select>
+            <option>Heavy Civil</option>
+            <option>Infrastructure</option>
+            <option>Utilities</option>
+            <option>General Construction</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Company Size</label>
+          <select>
+            <option>1–10 employees</option>
+            <option>11–50 employees</option>
+            <option selected>51–200 employees</option>
+            <option>200+ employees</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Your Role</label>
+          <select>
+            <option>Recruiter</option>
+            <option>Hiring Manager</option>
+            <option>Founder / CEO</option>
+            <option>HR Director</option>
+          </select>
+        </div>
+        <div class="nav-buttons">
+          <button class="btn-skip">I'll do this later</button>
+          <button class="btn-continue">Save and continue →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2: INVITE TEAM -->
+<div id="step2" class="screen onboard-shell">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="topbar-logomark"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      <span class="topbar-wordmark">trussk</span>
+    </div>
+    <div class="topbar-actions">
+      <span class="topbar-user">Logged in as george@trussk.io</span>
+      <span class="topbar-logout">↗ Log out</span>
+    </div>
+  </div>
+  <div class="info-banner">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Get started by setting up your company profile and team.
+  </div>
+  <div class="onboard-body">
+    <div class="sidebar">
+      <div class="sidebar-step done">
+        <div class="sidebar-step-icon">✓</div>
+        <div class="sidebar-step-text">
+          <h4>Create Account</h4>
+          <p>Sign up and verify your email to get started.</p>
+        </div>
+      </div>
+      <div class="sidebar-step done">
+        <div class="sidebar-step-icon">✓</div>
+        <div class="sidebar-step-text">
+          <h4>Company Profile</h4>
+          <p>Tell us about your organization and your role.</p>
+        </div>
+      </div>
+      <div class="sidebar-step active">
+        <div class="sidebar-step-icon">2</div>
+        <div class="sidebar-step-text">
+          <h4>Invite Your Team</h4>
+          <p>Add co-workers to collaborate on hiring.</p>
+        </div>
+      </div>
+      <div class="sidebar-step">
+        <div class="sidebar-step-icon">3</div>
+        <div class="sidebar-step-text">
+          <h4>Start Hiring</h4>
+          <p>Post your first job and find candidates.</p>
+        </div>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="main-content-inner">
+        <div class="step-label">STEP 2 OF 3</div>
+        <div class="step-title">Invite the rest of your team</div>
+        <div class="step-desc">Invite your co-workers to collaborate on hiring. They'll receive an email with instructions to join your Trussk workspace.</div>
+        <div class="invite-section-label">Invite co-workers to Trussk</div>
+        <div class="invite-row">
+          <div class="invite-email-wrap"><span>✉</span><input type="text" placeholder="Enter email"></div>
+          <select class="role-select"><option>Recruiter</option><option>Hiring Manager</option><option>Admin</option><option>Viewer</option></select>
+        </div>
+        <div class="invite-row">
+          <div class="invite-email-wrap"><span>✉</span><input type="text" placeholder="Enter email"></div>
+          <select class="role-select"><option>Recruiter</option><option>Hiring Manager</option><option>Admin</option><option>Viewer</option></select>
+        </div>
+        <button class="add-more-btn">＋ Add more</button>
+        <div class="nav-buttons">
+          <div style="display:flex;align-items:center;gap:20px;">
+            <button class="btn-back">← Back</button>
+            <button class="btn-skip">I'll do this later</button>
+          </div>
+          <button class="btn-continue">Send invites →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3: WELCOME MODAL -->
+<div id="step3" class="screen welcome-bg">
+  <div class="db-bg">
+    <div class="db-sidebar-bg">
+      <div style="height:32px;display:flex;align-items:center;padding:0 4px;margin-bottom:12px;">
+        <div style="width:28px;height:28px;background:#f97316;border-radius:6px;"></div>
+        <div style="width:60px;height:10px;background:rgba(255,255,255,0.3);border-radius:4px;margin-left:8px;"></div>
+      </div>
+      <div class="db-nav-item active"><div class="db-nav-dot orange"></div><div class="db-nav-line"></div></div>
+      <div class="db-nav-item"><div class="db-nav-dot"></div><div class="db-nav-line" style="width:50%"></div></div>
+      <div class="db-nav-item"><div class="db-nav-dot"></div><div class="db-nav-line" style="width:65%"></div></div>
+      <div class="db-nav-item"><div class="db-nav-dot"></div><div class="db-nav-line" style="width:45%"></div></div>
+      <div class="db-nav-item"><div class="db-nav-dot"></div><div class="db-nav-line" style="width:55%"></div></div>
+    </div>
+    <div class="db-main-bg">
+      <div class="db-header">
+        <div class="db-stat"><div class="db-stat-num"></div><div class="db-stat-label"></div></div>
+        <div class="db-stat"><div class="db-stat-num" style="width:40%"></div><div class="db-stat-label" style="width:60%"></div></div>
+        <div class="db-stat"><div class="db-stat-num" style="width:55%"></div><div class="db-stat-label" style="width:70%"></div></div>
+        <div class="db-stat"><div class="db-stat-num" style="width:35%"></div><div class="db-stat-label" style="width:50%"></div></div>
+      </div>
+      <div class="db-table">
+        <div class="db-row" style="background:#f9fafb;">
+          <div class="db-cell" style="width:80px;background:#e5e7eb;"></div>
+          <div class="db-cell" style="flex:1;background:#e5e7eb;"></div>
+          <div class="db-cell" style="width:60px;background:#e5e7eb;"></div>
+          <div class="db-cell" style="width:60px;background:#e5e7eb;"></div>
+        </div>
+        <div class="db-row"><div class="db-avatar"></div><div class="db-cell" style="flex:1"></div><div class="db-cell" style="width:80px"></div><div class="db-badge"></div></div>
+        <div class="db-row"><div class="db-avatar" style="background:#ddd6fe"></div><div class="db-cell" style="flex:1"></div><div class="db-cell" style="width:60px"></div><div class="db-badge" style="background:#fef9c3"></div></div>
+        <div class="db-row"><div class="db-avatar" style="background:#fed7aa"></div><div class="db-cell" style="flex:1"></div><div class="db-cell" style="width:90px"></div><div class="db-badge" style="background:#dbeafe"></div></div>
+        <div class="db-row"><div class="db-avatar" style="background:#bbf7d0"></div><div class="db-cell" style="flex:1"></div><div class="db-cell" style="width:70px"></div><div class="db-badge"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-icon-ring">🎉</div>
+      <div class="modal-title">Welcome to Trussk</div>
+      <div class="modal-body">You're all set! Start posting jobs and let AI find, score, and rank the right infrastructure candidates for you — in minutes.</div>
+      <button class="modal-cta">Post your first job →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.flow-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

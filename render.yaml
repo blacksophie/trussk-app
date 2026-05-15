@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: trussk
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npx tsx server.ts
+    healthCheckPath: /api/market-intelligence?soc=11-9021&location=FL
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: CAREERONESTOP_USER_ID
+        sync: false
+      - key: CAREERONESTOP_TOKEN
+        sync: false
+      - key: FIREBASE_ADMIN_CREDENTIALS
+        sync: false

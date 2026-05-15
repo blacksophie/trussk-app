@@ -1,0 +1,94 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Validation Rules ---
+
+    function isValidJob(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+             data.location is string && data.location.size() <= 200 &&
+             data.userId == request.auth.uid;
+    }
+
+    function isValidCandidate(data) {
+      return data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 200 &&
+             data.stage in ['Identified', 'Initial Screen', 'Technical', 'On-site', 'Offer', 'Cold'] &&
+             data.userId == request.auth.uid;
+    }
+
+    // --- Collection Matches ---
+
+    // users/{uid} — profile doc + tokens subcollection.
+    // Only the owning user may read or write; the Admin SDK bypasses these
+    // rules server-side (server.ts uses admin.firestore(), not the client SDK).
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      // OAuth tokens — tightest possible scope.
+      // No other user (or unauthenticated caller) can ever touch this path.
+      match /tokens/{provider} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    match /jobs/{jobId} {
+      allow create: if isSignedIn() && isValidJob(incoming());
+      allow get: if isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow update: if isOwner(existing().userId) && isValidJob(incoming()) &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['title', 'location', 'description', 'industry']);
+      allow delete: if isOwner(existing().userId);
+    }
+
+    match /interviews/{interviewId} {
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid &&
+                      incoming().candidateName is string && incoming().candidateName.size() > 0 &&
+                      incoming().date is string && incoming().date.size() == 10;
+      allow get: if isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow update: if isOwner(existing().userId) && incoming().userId == request.auth.uid;
+      allow delete: if isOwner(existing().userId);
+    }
+
+    match /candidates/{candidateId} {
+      allow create: if isSignedIn() && isValidCandidate(incoming());
+      allow get: if isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow update: if isOwner(existing().userId) && isValidCandidate(incoming()) &&
+                      incoming().diff(existing()).affectedKeys().hasOnly([
+                        'rank', 'priority', 'firstName', 'fullName', 'title', 'company', 
+                        'location', 'tenure', 'yearsExperience', 'currentPosition', 
+                        'linkedInUrl', 'email', 'phone', 'driveTime', 'fitNotes', 
+                        'validationNotes', 'outreachVariant', 'personalization', 
+                        'score', 'about', 'certifications', 'topSkills', 
+                        'emailConfidence', 'personalEmail', 'liActivity', 'stage'
+                      ]);
+      allow delete: if isOwner(existing().userId);
+    }
+  }
+}
