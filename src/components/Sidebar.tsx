@@ -13,6 +13,7 @@ import {
   Link2,
 } from 'lucide-react';
 import { View, Candidate, Interview } from '../types';
+import { NICHE } from '../config/niche';
 import { auth } from '../lib/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from './Toast';
@@ -128,7 +129,7 @@ export default function Sidebar({ currentView, onViewChange, isOpen, onClose, in
         {/* Logo */}
         {!isCollapsed && (
           <div className="px-3 mb-6 pt-1">
-            <h1 className="text-base font-semibold text-white tracking-tighter italic">TRUSSK</h1>
+            <h1 className="text-base font-semibold text-white tracking-tighter italic">{NICHE.appName.toUpperCase()}</h1>
           </div>
         )}
 

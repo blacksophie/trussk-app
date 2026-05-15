@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { NICHE } from '../config/niche';
 import { ArrowLeft, ArrowUp, MapPin, Briefcase, Clock, DollarSign, CheckCircle2, Star, Linkedin } from 'lucide-react';
 
 interface ClarifyJobViewProps {
@@ -158,7 +159,7 @@ export default function ClarifyJobView({ jobDescription, onConfirm, onBack }: Cl
           </button>
           <div>
             <h2 className="text-sm font-semibold text-gray-900">Role Verification</h2>
-            <p className="text-[10px] text-gray-400">Trussk AI is reviewing your role</p>
+            <p className="text-[10px] text-gray-400">{NICHE.appName} AI is reviewing your role</p>
           </div>
           <div className="ml-auto flex items-center gap-1.5">
             <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
@@ -218,7 +219,7 @@ export default function ClarifyJobView({ jobDescription, onConfirm, onBack }: Cl
             {outOfScope && (
               <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                 className="border border-gray-100 bg-white rounded-2xl p-4 text-center shadow-sm">
-                <p className="text-xs text-gray-400 mb-3">This role may be outside Trussk's scope.</p>
+                <p className="text-xs text-gray-400 mb-3">This role may be outside {NICHE.appName}'s scope.</p>
                 <button onClick={onBack} className="px-4 py-2 border border-gray-200 text-gray-600 text-xs font-medium rounded-lg hover:bg-gray-50 transition-all">
                   ← Go back
                 </button>
@@ -237,7 +238,7 @@ export default function ClarifyJobView({ jobDescription, onConfirm, onBack }: Cl
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleSend(); } }}
-              placeholder={readyToSearch ? 'Review your job post →' : 'Reply to Trussk AI...'}
+              placeholder={readyToSearch ? 'Review your job post →' : `Reply to ${NICHE.appName} AI...`}
               disabled={isLoading || readyToSearch || outOfScope}
               className="flex-1 bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
             />

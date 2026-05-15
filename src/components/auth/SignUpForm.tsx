@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { signInWithGoogle } from '../../lib/firebase';
+import { NICHE } from '../../config/niche';
 
 interface Props {
   onEmailContinue: (email: string) => void;
@@ -35,7 +36,7 @@ export default function SignUpForm({ onEmailContinue, onGoogleSuccess, onSwitchT
     <div>
       <h1 className="text-[30px] font-bold text-gray-900 tracking-tight mb-2">Sign up</h1>
       <p className="text-[14px] text-gray-500 mb-8 leading-relaxed">
-        Create an account to start hiring infrastructure talent with Trussk.
+        Create an account to start hiring infrastructure talent with {NICHE.appName}.
       </p>
 
       <div className="flex flex-col gap-2.5 mb-5">

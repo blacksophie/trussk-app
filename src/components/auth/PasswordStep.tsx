@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Eye, EyeOff } from 'lucide-react';
 import { signUpWithEmail, signInWithEmail, resetPassword } from '../../lib/firebase';
 import { ErrorBanner, mapAuthError } from './SignUpForm';
+import { NICHE } from '../../config/niche';
 
 interface Props {
   email: string;
@@ -56,7 +57,7 @@ export default function PasswordStep({ email, mode, onSuccess, onBack }: Props) 
         {mode === 'sign-up' ? 'Create your account' : 'Welcome back'}
       </h1>
       <p className="text-[14px] text-gray-500 mb-8">
-        {mode === 'sign-up' ? 'Choose a password for your Trussk account.' : 'Enter your password to continue.'}
+        {mode === 'sign-up' ? `Choose a password for your ${NICHE.appName} account.` : 'Enter your password to continue.'}
       </p>
 
       {/* Email chip */}

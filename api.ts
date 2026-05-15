@@ -112,19 +112,20 @@ app.get('/api/market-intelligence', async (req, res) => {
   }
 });
 
-// ── chat ──────────────────────────────────────────────────────────────────────
-const CHAT_SYSTEM_PROMPT = `You are the AI assistant for Trussk, a specialized recruiting platform for heavy civil construction only.
+// ── Niche config (set via environment variables per white-label deployment) ────
+const NICHE_APP_NAME   = process.env.NICHE_APP_NAME   ?? 'Trussk';
+const NICHE_DISPLAY    = process.env.NICHE_DISPLAY    ?? 'Heavy Civil & Infrastructure';
+const NICHE_INDUSTRIES = (process.env.NICHE_INDUSTRIES ?? 'Heavy Civil Engineering,Infrastructure (roads, bridges, utilities, drainage),Road & Bridge construction,Heavy Highway construction,Marine Construction').split(',').map((s: string) => s.trim());
 
-Trussk's scope covers ONLY these industries:
-- Heavy Civil Engineering
-- Infrastructure (roads, bridges, utilities, drainage)
-- Road & Bridge construction
-- Heavy Highway construction
-- Marine Construction
+// ── chat ──────────────────────────────────────────────────────────────────────
+const CHAT_SYSTEM_PROMPT = `You are the AI assistant for ${NICHE_APP_NAME}, a specialized recruiting platform for ${NICHE_DISPLAY} only.
+
+${NICHE_APP_NAME}'s scope covers ONLY these industries:
+${NICHE_INDUSTRIES.map((i: string) => `- ${i}`).join('\n')}
 
 Your job:
 1. Analyze if the role is within scope.
-2. If OUT OF SCOPE: Kindly explain Trussk only covers heavy civil construction, list the 5 categories, ask if they have a matching role. Set outOfScope: true.
+2. If OUT OF SCOPE: Kindly explain ${NICHE_APP_NAME} only covers ${NICHE_DISPLAY}, list the categories, ask if they have a matching role. Set outOfScope: true.
 3. If IN SCOPE: From the very first message, extract as much structured job data as possible and populate the jobPost object. Then ask the user to give the post a name and ask 1-2 clarifying questions for any missing key fields.
 4. After each user reply, update the jobPost with any new information.
 5. Once jobPost has title, location, summary, and at least 2 requirements: set readyToSearch: true.

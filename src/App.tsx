@@ -9,6 +9,7 @@ import { CalendarView } from './components/CalendarView';
 import { MarketIntelligence } from './components/MarketIntelligence';
 import { IntegrationsView } from './components/IntegrationsView';
 import { FeedbackView } from './components/FeedbackView';
+import { NICHE } from './config/niche';
 import { IMPORTED_CANDIDATES } from './data/imported_candidates';
 import { motion, AnimatePresence } from 'motion/react';
 import { ToastProvider, useToast } from './components/Toast';
@@ -328,7 +329,7 @@ function AppContent() {
           transition={{ duration: 1.5, repeat: Infinity }}
           className="text-brand font-bold tracking-[0.2em] uppercase"
         >
-          Initializing Trussk...
+          Initializing {NICHE.appName}...
         </motion.div>
       </div>
     );
@@ -357,7 +358,7 @@ function AppContent() {
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-200 bg-white z-50">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-2xl tracking-tighter uppercase italic text-gray-900">Trussk</span>
+          <span className="font-semibold text-2xl tracking-tighter uppercase italic text-gray-900">{NICHE.appName}</span>
         </div>
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -536,9 +537,9 @@ function AppContent() {
                    <p className="text-gray-500 font-bold">Real-time labor market analytics from US Department of Labor.</p>
                 </div>
                 <MarketIntelligence 
-                  socCode="11-9021" 
-                  location="Florida" 
-                  jobTitle="Construction Manager" 
+                  socCode={NICHE.marketSoc}
+                  location={NICHE.marketLocation}
+                  jobTitle={NICHE.marketJobTitle} 
                 />
               </div>
             </motion.div>

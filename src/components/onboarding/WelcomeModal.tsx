@@ -1,6 +1,7 @@
 // src/components/onboarding/WelcomeModal.tsx
 import React from 'react';
 import { motion } from 'motion/react';
+import { NICHE } from '../../config/niche';
 
 interface Props {
   onPostFirstJob: () => void;
@@ -20,7 +21,7 @@ export default function WelcomeModal({ onPostFirstJob }: Props) {
           🎉
         </div>
 
-        <h2 className="text-[22px] font-bold text-gray-900 tracking-tight mb-3">Welcome to Trussk</h2>
+        <h2 className="text-[22px] font-bold text-gray-900 tracking-tight mb-3">Welcome to {NICHE.appName}</h2>
         <p className="text-[14px] text-gray-500 leading-relaxed mb-7">
           You're all set! Start posting jobs and let AI find, score, and rank the right infrastructure candidates for you — in minutes.
         </p>

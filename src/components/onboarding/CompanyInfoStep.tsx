@@ -1,5 +1,6 @@
 // src/components/onboarding/CompanyInfoStep.tsx
 import React, { useState } from 'react';
+import { NICHE } from '../../config/niche';
 
 export interface CompanyInfo {
   companyName: string;
@@ -37,7 +38,7 @@ export default function CompanyInfoStep({ onContinue, onSkip }: Props) {
       <p className="text-[11px] font-bold text-brand uppercase tracking-widest mb-2">STEP 1 OF 3</p>
       <h1 className="text-[26px] font-bold text-gray-900 tracking-tight mb-2">Tell us about your company</h1>
       <p className="text-[14px] text-gray-500 mb-8 leading-relaxed">
-        Help us tailor Trussk to your hiring needs. This lets us surface the most relevant candidates and market data for your industry.
+        Help us tailor {NICHE.appName} to your hiring needs. This lets us surface the most relevant candidates and market data for your industry.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-5">

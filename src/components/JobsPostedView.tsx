@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
+import { NICHE } from '../config/niche';
 import {
   Briefcase,
   MapPin,
@@ -118,7 +119,7 @@ export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJo
               </div>
               <h3 className="text-sm font-semibold text-gray-900 mb-2">No roles posted yet</h3>
               <p className="text-xs text-gray-400 max-w-xs leading-relaxed mb-6">
-                Post your first job and Trussk will automatically identify and rank the best candidates for you.
+                Post your first job and {NICHE.appName} will automatically identify and rank the best candidates for you.
               </p>
               <button onClick={onNewRole} className="flex items-center gap-2 px-4 py-2.5 bg-brand text-white text-xs font-medium rounded-lg hover:bg-brand/90 transition-all shadow-sm shadow-brand/20">
                 <Plus className="w-3.5 h-3.5" />

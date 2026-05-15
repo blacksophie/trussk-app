@@ -1,5 +1,6 @@
 // src/components/onboarding/InviteTeamStep.tsx
 import React, { useState } from 'react';
+import { NICHE } from '../../config/niche';
 
 interface InviteRow {
   email: string;
@@ -37,10 +38,10 @@ export default function InviteTeamStep({ onSend, onSkip, onBack }: Props) {
       <p className="text-[11px] font-bold text-brand uppercase tracking-widest mb-2">STEP 2 OF 3</p>
       <h1 className="text-[26px] font-bold text-gray-900 tracking-tight mb-2">Invite the rest of your team</h1>
       <p className="text-[14px] text-gray-500 mb-8 leading-relaxed">
-        Invite your co-workers to collaborate on hiring. They'll receive an email with instructions to join your Trussk workspace.
+        Invite your co-workers to collaborate on hiring. They'll receive an email with instructions to join your {NICHE.appName} workspace.
       </p>
 
-      <p className="text-[12px] font-semibold text-gray-600 mb-3">Invite co-workers to Trussk</p>
+      <p className="text-[12px] font-semibold text-gray-600 mb-3">Invite co-workers to {NICHE.appName}</p>
 
       <div className="space-y-2.5 mb-3">
         {rows.map((row, i) => (

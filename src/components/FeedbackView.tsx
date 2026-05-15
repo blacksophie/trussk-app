@@ -11,6 +11,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { auth, db } from '../lib/firebase';
+import { NICHE } from '../config/niche';
 import { collection, addDoc, query, where, orderBy, limit, getDocs, serverTimestamp } from 'firebase/firestore';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -126,7 +127,7 @@ export function FeedbackView() {
         category,
         rating,
         message: message.trim(),
-        niche: 'heavy_civil',
+        niche: NICHE.id,
         submittedAt: serverTimestamp(),
       });
       setSubmitted(true);
@@ -153,7 +154,7 @@ export function FeedbackView() {
         <div className="mb-8">
           <h1 className="text-[22px] font-bold text-gray-900 tracking-tight">Feedback</h1>
           <p className="text-[13px] text-gray-500 mt-1.5 leading-relaxed max-w-lg">
-            Help us build the best recruiting tool for heavy civil. Every submission is reviewed and used to prioritise what we build next.
+            Help us build the best recruiting tool for {NICHE.display}. Every submission is reviewed and used to prioritise what we build next.
           </p>
         </div>
 
@@ -194,7 +195,7 @@ export function FeedbackView() {
               {/* Rating */}
               <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
                 <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-4">
-                  How is Trussk working for you?
+                  How is {NICHE.appName} working for you?
                 </p>
                 <div className="grid grid-cols-5 gap-2">
                   {RATINGS.map(r => (
