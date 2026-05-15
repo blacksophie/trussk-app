@@ -56,6 +56,91 @@ const PORT = 3000;
 const CAREERONESTOP_USER_ID = process.env.CAREERONESTOP_USER_ID;
 const CAREERONESTOP_TOKEN = process.env.CAREERONESTOP_TOKEN;
 
+// ---------------------------------------------------------------------------
+// Firebase REST helpers — project-agnostic, no Admin SDK required for auth.
+// Token verification uses identitytoolkit so it works regardless of which
+// Firebase project the admin SDK is initialised against.
+// ---------------------------------------------------------------------------
+const FB_API_KEY = process.env.FIREBASE_API_KEY || 'AIzaSyCfDcC_793zUoZHKQaAWNxkbE9HEwF_nYQ';
+const FB_PROJECT = process.env.FIREBASE_PROJECT_ID || 'trussk40';
+const FS_BASE = `https://firestore.googleapis.com/v1/projects/${FB_PROJECT}/databases/(default)/documents`;
+
+async function verifyIdTokenRest(idToken: string): Promise<string> {
+  const { data } = await axios.post(
+    `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${FB_API_KEY}`,
+    { idToken }
+  );
+  const uid = data.users?.[0]?.localId;
+  if (!uid) throw new Error('invalid_token');
+  return uid;
+}
+
+function fsFields(obj: Record<string, string>): Record<string, any> {
+  return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, { stringValue: v }]));
+}
+
+function fromFsFields(fields: Record<string, any>): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(fields).map(([k, v]) => [k, v.stringValue ?? v.integerValue ?? ''])
+  );
+}
+
+async function fsGet(idToken: string, path: string): Promise<Record<string, string> | null> {
+  try {
+    const { data } = await axios.get(`${FS_BASE}/${path}`, {
+      headers: { Authorization: `Bearer ${idToken}` },
+    });
+    return data.fields ? fromFsFields(data.fields) : null;
+  } catch (err: any) {
+    if (err.response?.status === 404) return null;
+    throw err;
+  }
+}
+
+async function fsList(idToken: string, path: string): Promise<string[]> {
+  try {
+    const { data } = await axios.get(`${FS_BASE}/${path}`, {
+      headers: { Authorization: `Bearer ${idToken}` },
+    });
+    return (data.documents ?? []).map((d: any) => d.name.split('/').pop() as string);
+  } catch (err: any) {
+    if (err.response?.status === 404) return [];
+    throw err;
+  }
+}
+
+async function fsSet(idToken: string, path: string, obj: Record<string, string>): Promise<void> {
+  await axios.patch(`${FS_BASE}/${path}`, { fields: fsFields(obj) }, {
+    headers: { Authorization: `Bearer ${idToken}` },
+  });
+}
+
+// Shared auth helper — verifies Bearer token, returns { uid, idToken, googleAccessToken }
+async function verifyAndGetTokens(
+  req: express.Request,
+  res: express.Response
+): Promise<{ uid: string; idToken: string; googleAccessToken: string } | null> {
+  const raw = req.headers.authorization ?? '';
+  const idToken = raw.startsWith('Bearer ') ? raw.slice(7) : null;
+  if (!idToken) {
+    res.status(401).json({ error: 'missing_token', message: 'Authorization header required.' });
+    return null;
+  }
+  let uid: string;
+  try {
+    uid = await verifyIdTokenRest(idToken);
+  } catch {
+    res.status(401).json({ error: 'invalid_token', message: 'Firebase ID token is invalid or expired.' });
+    return null;
+  }
+  const tokenDoc = await fsGet(idToken, `users/${uid}/tokens/google`);
+  if (!tokenDoc?.accessToken) {
+    res.status(401).json({ error: 'no_google_token', message: 'Google account not connected. Visit the Integrations tab and sign in with Google.' });
+    return null;
+  }
+  return { uid, idToken, googleAccessToken: tokenDoc.accessToken };
+}
+
 async function startServer() {
   const app = express();
   app.use(express.json());
@@ -325,65 +410,22 @@ Rules for jobPost:
   // Authorization: Bearer <firebase-id-token>
   // ---------------------------------------------------------------------------
   app.get('/api/fetch-threads', async (req, res) => {
-    if (!adminDb) {
-      return res.status(503).json({
-        error: 'admin_unavailable',
-        message: 'Gmail proxy is not configured. Add firebase-admin.json or FIREBASE_ADMIN_CREDENTIALS.',
-      });
-    }
+    const auth = await verifyAndGetTokens(req, res);
+    if (!auth) return;
+    const { uid, idToken, googleAccessToken: accessToken } = auth;
 
-    // 1. Verify the caller's Firebase ID token
-    const rawAuth = req.headers.authorization ?? '';
-    const idToken = rawAuth.startsWith('Bearer ') ? rawAuth.slice(7) : null;
-
-    if (!idToken) {
-      return res.status(401).json({ error: 'missing_token', message: 'Authorization header required.' });
-    }
-
-    let uid: string;
-    try {
-      const decoded = await admin.auth().verifyIdToken(idToken);
-      uid = decoded.uid;
-    } catch {
-      return res.status(401).json({ error: 'invalid_token', message: 'Firebase ID token is invalid or expired.' });
-    }
-
-    // 2. Retrieve the stored Google access token from Firestore
-    const tokenSnap = await adminDb.doc(`users/${uid}/tokens/google`).get();
-
-    if (!tokenSnap.exists) {
-      return res.status(401).json({
-        error: 'no_google_token',
-        message: 'Google account not connected. Visit the Integrations tab and sign in with Google.',
-      });
-    }
-
-    const { accessToken } = tokenSnap.data() as { accessToken: string };
-
-    // 3. Proxy the Gmail API call
-    const { threadId, maxResults = '20' } = req.query as Record<string, string>;
-    const max = Math.min(parseInt(maxResults, 10) || 20, 50);
+    const { threadId } = req.query as Record<string, string>;
 
     try {
       if (threadId) {
-        // Fetch full thread with decoded body parts
         const { data } = await axios.get(
           `https://gmail.googleapis.com/gmail/v1/users/me/threads/${threadId}`,
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-            params: { format: 'full' },
-          }
+          { headers: { Authorization: `Bearer ${accessToken}` }, params: { format: 'full' } }
         );
         return res.json(sanitiseThread(data));
       } else {
-        // Closed-loop: fetch only threads the app sent, registered in Firestore.
-        const snapshot = await adminDb.collection(`users/${uid}/app_threads`).get();
-
-        if (snapshot.empty) {
-          return res.json({ threads: [], resultSizeEstimate: 0 });
-        }
-
-        const threadIds = snapshot.docs.map(d => d.id);
+        const threadIds = await fsList(idToken, `users/${uid}/app_threads`);
+        if (threadIds.length === 0) return res.json({ threads: [], resultSizeEstimate: 0 });
 
         // Fetch all registered threads — app_threads is bounded by emails sent via this app.
         const results = await Promise.all(
@@ -459,41 +501,9 @@ Rules for jobPost:
   // Authorization: Bearer <firebase-id-token>
   // ---------------------------------------------------------------------------
   app.post('/api/send-candidate-email', async (req, res) => {
-    if (!adminDb) {
-      return res.status(503).json({
-        error: 'admin_unavailable',
-        message: 'Gmail proxy is not configured. Add firebase-admin.json or FIREBASE_ADMIN_CREDENTIALS.',
-      });
-    }
-
-    const rawAuth = req.headers.authorization ?? '';
-    const idToken = rawAuth.startsWith('Bearer ') ? rawAuth.slice(7) : null;
-    if (!idToken) {
-      return res.status(401).json({ error: 'missing_token', message: 'Authorization header required.' });
-    }
-
-    let uid: string;
-    try {
-      const decoded = await admin.auth().verifyIdToken(idToken);
-      uid = decoded.uid;
-    } catch {
-      return res.status(401).json({ error: 'invalid_token', message: 'Firebase ID token is invalid or expired.' });
-    }
-
-    let accessToken: string;
-    try {
-      const tokenSnap = await adminDb.doc(`users/${uid}/tokens/google`).get();
-      if (!tokenSnap.exists) {
-        return res.status(401).json({
-          error: 'no_google_token',
-          message: 'Google account not connected. Visit the Integrations tab and sign in with Google.',
-        });
-      }
-      accessToken = (tokenSnap.data() as { accessToken: string }).accessToken;
-    } catch (fsErr: any) {
-      console.error('[send-candidate-email] Firestore error:', fsErr.message);
-      return res.status(503).json({ error: 'firestore_error', message: 'Could not retrieve token. Try again.' });
-    }
+    const auth = await verifyAndGetTokens(req, res);
+    if (!auth) return;
+    const { uid, idToken, googleAccessToken: accessToken } = auth;
 
     const { candidateEmail, subject, body } = req.body as {
       candidateEmail: string;
@@ -546,10 +556,10 @@ Rules for jobPost:
         return res.status(500).json({ error: 'gmail_error', message: 'Email sent but thread ID was missing.' });
       }
 
-      await adminDb.doc(`users/${uid}/app_threads/${threadId}`).set({
+      await fsSet(idToken, `users/${uid}/app_threads/${threadId}`, {
         candidateEmail,
         subject,
-        sentAt: admin.firestore.FieldValue.serverTimestamp(),
+        sentAt: new Date().toISOString(),
       });
 
       return res.json({ success: true, threadId });
@@ -582,27 +592,9 @@ Rules for jobPost:
   //   timeMin?     — ISO8601, defaults to now
   // ---------------------------------------------------------------------------
   app.get('/api/fetch-calendar', async (req, res) => {
-    if (!adminDb) {
-      return res.status(503).json({ error: 'admin_unavailable', message: 'Admin SDK not configured.' });
-    }
-
-    const rawAuth = req.headers.authorization ?? '';
-    const idToken = rawAuth.startsWith('Bearer ') ? rawAuth.slice(7) : null;
-    if (!idToken) return res.status(401).json({ error: 'missing_token' });
-
-    let uid: string;
-    try {
-      const decoded = await admin.auth().verifyIdToken(idToken);
-      uid = decoded.uid;
-    } catch {
-      return res.status(401).json({ error: 'invalid_token' });
-    }
-
-    const tokenSnap = await adminDb.doc(`users/${uid}/tokens/google`).get();
-    if (!tokenSnap.exists) {
-      return res.status(401).json({ error: 'no_google_token', message: 'Google account not connected.' });
-    }
-    const { accessToken } = tokenSnap.data() as { accessToken: string };
+    const auth = await verifyAndGetTokens(req, res);
+    if (!auth) return;
+    const { googleAccessToken: accessToken } = auth;
 
     const {
       calendarId = 'primary',
@@ -645,21 +637,9 @@ Rules for jobPost:
   // Authorization: Bearer <firebase-id-token>
   // ---------------------------------------------------------------------------
   app.post('/api/create-meeting', async (req, res) => {
-    if (!adminDb) {
-      return res.status(503).json({ error: 'admin_unavailable', meetingUrl: null });
-    }
-
-    const rawAuth = req.headers.authorization ?? '';
-    const idToken = rawAuth.startsWith('Bearer ') ? rawAuth.slice(7) : null;
-    if (!idToken) return res.status(401).json({ error: 'missing_token' });
-
-    let uid: string;
-    try {
-      const decoded = await admin.auth().verifyIdToken(idToken);
-      uid = decoded.uid;
-    } catch {
-      return res.status(401).json({ error: 'invalid_token' });
-    }
+    const auth = await verifyAndGetTokens(req, res);
+    if (!auth) return;
+    const { googleAccessToken } = auth;
 
     const { date, time, durationMinutes = 60, candidateName } = req.body;
 
@@ -684,10 +664,9 @@ Rules for jobPost:
     const endIso = endDate.toISOString();
     const subject = `Interview with ${candidateName}`;
 
-    // Try Google Calendar first
-    const googleSnap = await adminDb.doc(`users/${uid}/tokens/google`).get();
-    if (googleSnap.exists) {
-      const { accessToken } = googleSnap.data() as { accessToken: string };
+    // Try Google Calendar first (token already verified in verifyAndGetTokens)
+    if (googleAccessToken) {
+      const accessToken = googleAccessToken;
       try {
         const { data } = await axios.post(
           'https://www.googleapis.com/calendar/v3/calendars/primary/events',
@@ -719,10 +698,10 @@ Rules for jobPost:
       }
     }
 
-    // Try Microsoft Teams
-    const msSnap = await adminDb.doc(`users/${uid}/tokens/microsoft`).get();
-    if (msSnap.exists) {
-      const { accessToken } = msSnap.data() as { accessToken: string };
+    // Try Microsoft Teams (look up token directly)
+    const msTokenDoc = await fsGet(auth.idToken, `users/${auth.uid}/tokens/microsoft`).catch(() => null);
+    if (msTokenDoc?.accessToken) {
+      const accessToken = msTokenDoc.accessToken;
       try {
         const { data } = await axios.post(
           'https://graph.microsoft.com/v1.0/me/onlineMeetings',

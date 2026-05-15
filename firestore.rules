@@ -49,9 +49,12 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, write: if isOwner(userId);
 
-      // OAuth tokens — tightest possible scope.
-      // No other user (or unauthenticated caller) can ever touch this path.
       match /tokens/{provider} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // App-originated email threads — server writes via user's ID token.
+      match /app_threads/{threadId} {
         allow read, write: if isOwner(userId);
       }
     }
