@@ -43,7 +43,7 @@ function CalCandidatePicker({ jobs, candidates, onSelect, onClose }: PickerProps
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-40 flex items-center justify-center p-4"
+      className="absolute inset-0 z-40 flex items-center justify-center p-4"
       style={{ background: 'rgba(0,0,0,0.35)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
@@ -154,8 +154,6 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   candidates = [],
   jobs = [],
   interviews = [],
-  userId = '',
-  jobId,
   calUrl,
   onDeleteInterview,
 }) => {

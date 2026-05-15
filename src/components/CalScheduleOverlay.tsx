@@ -54,7 +54,7 @@ export const CalScheduleOverlay: React.FC<Props> = ({ calUrl, candidate, onClose
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.98 }}
       transition={{ duration: 0.18 }}
-      className="fixed inset-0 z-50 flex flex-col bg-white overflow-hidden"
+      className="absolute inset-0 z-50 flex flex-col bg-white overflow-hidden"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0 bg-white shadow-sm">
