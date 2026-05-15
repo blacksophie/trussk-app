@@ -36,7 +36,6 @@ export const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
 }) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,8 +44,8 @@ export const MarketIntelligence: React.FC<MarketIntelligenceProps> = ({
         const response = await fetch(`/api/market-intelligence?soc=${socCode}&location=${location}`);
         const result = await response.json();
         setData(result);
-      } catch (err) {
-        setError('Failed to load market intelligence data.');
+      } catch {
+        console.error('Failed to load market intelligence data.');
       } finally {
         setLoading(false);
       }

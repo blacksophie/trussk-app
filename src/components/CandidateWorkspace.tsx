@@ -2,10 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Search,
-  Filter,
   ChevronRight,
   ChevronLeft,
-  MoreHorizontal,
   Mail,
   Send,
   Linkedin,
@@ -13,10 +11,8 @@ import {
   MapPin,
   Briefcase,
   Star,
-  CheckCircle2,
   ShieldCheck,
   ExternalLink,
-  Plus,
   MessageSquare,
   FileText,
   Layers,
@@ -27,9 +23,7 @@ import {
   DollarSign,
   AlertTriangle,
   TrendingUp,
-  Shield,
   Zap,
-  BarChart3,
   CalendarDays,
 } from 'lucide-react';
 import { Candidate, Stage } from '../types';
@@ -47,7 +41,7 @@ interface CandidateWorkspaceProps {
 }
 
 export default function CandidateWorkspace({
-  jobTitle,
+  jobTitle: _jobTitle,
   candidates,
   selectedCandidate,
   onSelectCandidate,

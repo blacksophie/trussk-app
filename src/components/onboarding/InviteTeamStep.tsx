@@ -1,5 +1,5 @@
 // src/components/onboarding/InviteTeamStep.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NICHE } from '../../config/niche';
 
 interface InviteRow {

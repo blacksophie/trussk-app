@@ -1,5 +1,5 @@
 // src/components/auth/AuthPage.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import AuthSplitLayout from './AuthSplitLayout';
 import SignUpForm from './SignUpForm';

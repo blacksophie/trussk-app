@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { NICHE } from '../config/niche';
 import { ArrowLeft, ArrowUp, MapPin, Briefcase, Clock, DollarSign, CheckCircle2, Star, Linkedin } from 'lucide-react';

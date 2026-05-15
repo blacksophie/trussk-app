@@ -1,5 +1,4 @@
 // src/components/onboarding/OnboardingSidebar.tsx
-import React from 'react';
 
 export type OnboardingStepId = 'company' | 'invite' | 'welcome';
 

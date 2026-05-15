@@ -8,7 +8,6 @@ import {
   MessageSquare,
   CheckCircle2,
   Loader2,
-  ChevronRight,
 } from 'lucide-react';
 import { auth, db } from '../lib/firebase';
 import { NICHE } from '../config/niche';

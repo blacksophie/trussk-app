@@ -5,7 +5,6 @@ import {
   ArrowUp,
   ImageIcon,
   FileUp,
-  MonitorIcon,
   CircleUserRound,
   LayoutDashboard,
 } from 'lucide-react';

@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, MoreHorizontal, UserCheck, Linkedin, ExternalLink, Mail, Phone, ShieldCheck, ArrowUpDown, ChevronDown, SortAsc, SortDesc, Briefcase, ChevronRight } from 'lucide-react';
+import { Search, MoreHorizontal, Linkedin, ArrowUpDown, ChevronDown, SortAsc, SortDesc, Briefcase, ChevronRight } from 'lucide-react';
 import { Candidate } from '../types';
 
 type SortKey = 'score' | 'priority' | 'name';

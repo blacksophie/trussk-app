@@ -4,7 +4,6 @@ import { NICHE } from '../config/niche';
 import {
   Briefcase,
   MapPin,
-  Calendar,
   Users,
   Trash2,
   Search,

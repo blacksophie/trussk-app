@@ -20,7 +20,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Firebase Admin — use service account file locally, auto-credentials on Cloud Run
-let adminDb: admin.firestore.Firestore | null = null;
 (function initAdmin() {
   try {
     let credential: admin.credential.Credential;
@@ -33,12 +32,12 @@ let adminDb: admin.firestore.Firestore | null = null;
     } else {
       // On Cloud Run — use Application Default Credentials
       admin.initializeApp();
-      adminDb = admin.firestore();
+      admin.firestore();
       console.log('[Admin] Firebase Admin initialised via ADC.');
       return;
     }
     admin.initializeApp({ credential });
-    adminDb = admin.firestore();
+    admin.firestore();
     console.log('[Admin] Firebase Admin initialised.');
   } catch (err: any) {
     console.error('[Admin] Failed to initialise Firebase Admin:', err.message);

@@ -1,5 +1,4 @@
 // src/components/onboarding/WelcomeModal.tsx
-import React from 'react';
 import { motion } from 'motion/react';
 import { NICHE } from '../../config/niche';
 

@@ -26,8 +26,6 @@ const __dirname = path.dirname(__filename);
 //   2. ./firebase-admin.json file in the project root (local dev convenience)
 // If neither is present the server starts but Gmail proxy routes return 503.
 // ---------------------------------------------------------------------------
-let adminDb: admin.firestore.Firestore | null = null;
-
 (function initAdmin() {
   try {
     let credential: admin.credential.Credential;
@@ -44,7 +42,7 @@ let adminDb: admin.firestore.Firestore | null = null;
     }
 
     admin.initializeApp({ credential });
-    adminDb = admin.firestore();
+    admin.firestore();
     console.log('[Admin] Firebase Admin SDK initialised.');
   } catch (err: any) {
     console.error('[Admin] Failed to initialise Firebase Admin:', err.message);
@@ -259,7 +257,7 @@ Rules for jobPost:
 - Once title, location, summary, and requirements have content, set readyToSearch: true`;
 
   app.post('/api/chat', async (req, res) => {
-    const { messages, jobDescription } = req.body;
+    const { messages } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'messages array is required' });
@@ -326,7 +324,7 @@ Rules for jobPost:
     // Production serving
     const distPath = path.join(__dirname, 'dist');
     app.use(express.static(distPath));
-    app.get('*', (req, res) => {
+    app.get('*', (_req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
