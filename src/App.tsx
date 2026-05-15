@@ -283,8 +283,11 @@ function AppContent() {
         return addDoc(candidatesCollection, fullCandidate);
       });
 
-      await Promise.all(seedPromises);
-      toast(`Found ${finalMatches.length} matched candidates`, 'success');
+      const results = await Promise.allSettled(seedPromises);
+      const failed = results.filter(r => r.status === 'rejected').length;
+      const seeded = results.length - failed;
+      if (failed > 0) console.error(`[App] ${failed} candidate(s) failed to seed`);
+      toast(`Found ${seeded} matched candidates`, 'success');
 
       setTimeout(() => {
         setIsSourcing(false);
