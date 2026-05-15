@@ -226,6 +226,7 @@ export function IntegrationsView() {
             isLinked={isProviderLinked('microsoft.com')}
             scopes={['Mail.Read', 'Calendars.Read']}
             onConnect={!msStatus.captured ? handleConnectOutlook : undefined}
+            onReconnect={msStatus.captured ? handleConnectOutlook : undefined}
             connecting={msConnecting}
           />
         </div>
