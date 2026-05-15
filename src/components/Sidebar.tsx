@@ -10,7 +10,6 @@ import {
   Sparkles,
   LayoutGrid,
   Calendar as CalendarIcon,
-  Zap,
   Link2,
 } from 'lucide-react';
 import { View, Candidate, Interview } from '../types';
@@ -36,7 +35,6 @@ export default function Sidebar({ currentView, onViewChange, isOpen, onClose, in
     { id: View.POST_JOB, label: 'Post Jobs', icon: Sparkles },
     { id: View.JOBS_POSTED, label: 'Active Jobs', icon: LayoutGrid },
     { id: View.CALENDAR, label: 'Calendar', icon: CalendarIcon },
-    { id: View.OUTREACH, label: 'Outreach', icon: Zap },
     { id: View.INTEGRATIONS, label: 'Integrations', icon: Link2 },
   ];
 
@@ -204,7 +202,7 @@ export default function Sidebar({ currentView, onViewChange, isOpen, onClose, in
                 <button className="w-full flex items-center justify-between p-4 rounded-2xl bg-linear-to-br from-brand/20 to-brand/5 border border-brand/20 group hover:border-brand/40 transition-all">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-brand rounded-lg text-white shadow-lg shadow-brand/20">
-                      <Zap className="w-4 h-4" />
+                      <Sparkles className="w-4 h-4" />
                     </div>
                     <div className="text-left">
                       <p className="text-[11px] font-semibold text-brand uppercase tracking-widest leading-none mb-1">Elite Plan</p>
