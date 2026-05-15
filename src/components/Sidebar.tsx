@@ -54,7 +54,7 @@ export default function Sidebar({ currentView, onViewChange, isOpen, onClose, in
     }));
 
   const supportItems = [
-    { id: 'feedback', label: 'Feedback', icon: MessageSquare, tag: 'BETA' },
+    { id: View.FEEDBACK, label: 'Feedback', icon: MessageSquare, tag: 'BETA' },
     { id: View.POST_JOB, label: 'Settings', icon: Settings },
   ];
 

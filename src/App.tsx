@@ -8,6 +8,7 @@ import { JobsPostedView } from './components/JobsPostedView';
 import { CalendarView } from './components/CalendarView';
 import { MarketIntelligence } from './components/MarketIntelligence';
 import { IntegrationsView } from './components/IntegrationsView';
+import { FeedbackView } from './components/FeedbackView';
 import { IMPORTED_CANDIDATES } from './data/imported_candidates';
 import { motion, AnimatePresence } from 'motion/react';
 import { ToastProvider, useToast } from './components/Toast';
@@ -551,6 +552,18 @@ function AppContent() {
               className="w-full h-full"
             >
               <IntegrationsView onCalUrlChange={setCalUrl} />
+            </motion.div>
+          )}
+
+          {currentView === View.FEEDBACK && (
+            <motion.div
+              key="feedback"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full h-full"
+            >
+              <FeedbackView />
             </motion.div>
           )}
         </AnimatePresence>

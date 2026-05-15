@@ -89,5 +89,11 @@ service cloud.firestore {
                       ]);
       allow delete: if isOwner(existing().userId);
     }
+
+    match /feedback/{docId} {
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isOwner(existing().userId);
+    }
   }
 }

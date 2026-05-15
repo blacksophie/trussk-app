@@ -6,6 +6,7 @@ export enum View {
   CALENDAR = 'calendar',
   MARKET_INTEL = 'market-intel',
   INTEGRATIONS = 'integrations',
+  FEEDBACK = 'feedback',
 }
 
 export type Stage = 'Identified' | 'Initial Screen' | 'Technical' | 'On-site' | 'Offer' | 'Cold';
