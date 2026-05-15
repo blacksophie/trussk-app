@@ -1,4 +1,5 @@
 # Closed-Loop Inbox — Design Spec
+
 **Date:** 2026-05-14  
 **Status:** Approved  
 
@@ -29,6 +30,7 @@ Axios + Firestore Admin only — consistent with every existing route in `server
 **Auth:** Firebase ID token in `Authorization: Bearer` header. `uid` is derived from the verified token — never from the request body.
 
 **Request body:**
+
 ```json
 {
   "candidateEmail": "jane@example.com",
@@ -38,10 +40,12 @@ Axios + Firestore Admin only — consistent with every existing route in `server
 ```
 
 **Flow:**
+
 1. Verify Firebase ID token → extract `uid`.
 2. Read `users/{uid}/tokens/google` from Firestore → get `accessToken`.
 3. Build RFC 2822 raw email string:
-   ```
+
+   ```text
    From: me
    To: {candidateEmail}
    Subject: {subject}
@@ -49,6 +53,7 @@ Axios + Firestore Admin only — consistent with every existing route in `server
 
    {body}
    ```
+
 4. Base64url-encode the raw string.
 5. `POST https://gmail.googleapis.com/gmail/v1/users/me/messages/send` with `{ raw: "<encoded>" }`.
 6. Extract `threadId` from the Gmail response.
@@ -56,8 +61,9 @@ Axios + Firestore Admin only — consistent with every existing route in `server
 8. Return `{ success: true, threadId }`.
 
 **Error responses** (matching existing vocabulary):
+
 | Condition | HTTP | `error` code |
-|---|---|---|
+| --- | --- | --- |
 | Missing/invalid Firebase token | 401 | `missing_token` / `invalid_token` |
 | No Google token in Firestore | 401 | `no_google_token` |
 | Gmail returns 401 | 401 | `token_expired` |
@@ -75,6 +81,7 @@ Axios + Firestore Admin only — consistent with every existing route in `server
 **What changes:** The old `messages.list` + batch-metadata block is deleted. The single-thread path (`?threadId=<id>`) used by the detail view is **kept unchanged**.
 
 **New list flow:**
+
 1. Verify Firebase ID token → `uid`.
 2. Read `users/{uid}/tokens/google` → `accessToken`.
 3. Fetch all documents in `users/{uid}/app_threads/` via `adminDb.collection(...)`.
@@ -93,18 +100,21 @@ Axios + Firestore Admin only — consistent with every existing route in `server
 **Location:** A compose icon button (pencil or `Edit` icon) placed next to the existing refresh button in the inbox panel header.
 
 **Behavior:**
+
 - Clicking sets `composing = true` in local state.
 - On desktop: the right detail pane renders the compose panel instead of "Select a message to read".
 - On mobile: same slide-in behavior as the current message detail view.
 
 **Compose panel fields:**
+
 | Field | Type | Notes |
-|---|---|---|
+| --- | --- | --- |
 | To | `<input type="email">` | Free-text; required |
 | Subject | `<input type="text">` | Required |
 | Body | `<textarea>` | Required |
 
 **Send flow:**
+
 1. POST `/api/send-candidate-email` with `{ candidateEmail, subject, body }` + ID token header.
 2. Send button shows spinner while in-flight; inputs are disabled.
 3. On success: set `composing = false`, call `load()` to refresh the thread list (new thread now in Firestore → appears in inbox).
@@ -118,7 +128,7 @@ Axios + Firestore Admin only — consistent with every existing route in `server
 
 ## Data Model
 
-```
+```text
 users/
   {uid}/
     tokens/
