@@ -549,7 +549,7 @@ function AppContent() {
               exit={{ opacity: 0 }}
               className="w-full h-full"
             >
-              <IntegrationsView />
+              <IntegrationsView onCalUrlChange={setCalUrl} />
             </motion.div>
           )}
         </AnimatePresence>

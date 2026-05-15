@@ -3,7 +3,11 @@ import { CheckCircle2, ExternalLink } from 'lucide-react';
 import { auth, db } from '../lib/firebase';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
-export function IntegrationsView() {
+interface Props {
+  onCalUrlChange?: (url: string) => void;
+}
+
+export function IntegrationsView({ onCalUrlChange }: Props) {
   const [calUrl, setCalUrl] = useState('');
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -31,6 +35,7 @@ export function IntegrationsView() {
       await setDoc(doc(db, 'users', uid), { calUrl, updatedAt: serverTimestamp() }, { merge: true });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
+      onCalUrlChange?.(calUrl);
     } catch {
       setError('Failed to save. Please try again.');
     } finally {
