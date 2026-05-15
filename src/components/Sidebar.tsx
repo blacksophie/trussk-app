@@ -163,14 +163,16 @@ export default function Sidebar({ currentView, onViewChange, isOpen, onClose, in
               </div>
             )}
             <div className="space-y-1">
-              {(isCollapsed ? interviewsItems.map(i => i.avatarUrl) : interviewsItems).map((item: any, i: number) => (
-                isCollapsed ? (
-                   <button key={i} className="w-full flex justify-center py-3 text-gray-500 hover:text-white">
-                      <div className="w-6 h-6 rounded-lg overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center">
-                        {item ? <img src={item} className="w-full h-full object-cover" /> : <Users className="w-3 h-3" />}
-                      </div>
-                   </button>
-                ) : (
+              {isCollapsed ? (
+                interviewsItems.map((item, i) => (
+                  <button key={i} className="w-full flex justify-center py-3 text-gray-500 hover:text-white">
+                    <div className="w-6 h-6 rounded-lg overflow-hidden bg-white/5 border border-white/10 flex items-center justify-center">
+                      {item.avatarUrl ? <img src={item.avatarUrl} className="w-full h-full object-cover" /> : <Users className="w-3 h-3" />}
+                    </div>
+                  </button>
+                ))
+              ) : (
+                interviewsItems.map((item) => (
                   <button key={item.id} className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-white/4 text-gray-400 hover:text-white transition-all group">
                     <div className="flex items-center gap-4 min-w-0">
                       <div className="w-7 h-7 rounded-lg overflow-hidden bg-white/5 border border-white/10 shrink-0 flex items-center justify-center text-[9px] font-semibold text-gray-500 group-hover:border-brand/40 group-hover:text-brand">
@@ -187,8 +189,8 @@ export default function Sidebar({ currentView, onViewChange, isOpen, onClose, in
                     </div>
                     {item.time && <span className="text-xs font-semibold text-brand tracking-widest shrink-0">{item.time}</span>}
                   </button>
-                )
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>

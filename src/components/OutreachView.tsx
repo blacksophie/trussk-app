@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Search, Mail, RefreshCw, AlertCircle, Loader2,
   ChevronLeft, Archive, Trash2, MoreHorizontal, Reply, Star,
@@ -107,6 +107,7 @@ export const OutreachView: React.FC = () => {
   const [messages, setMessages] = useState<GmailMessage[]>([]);
   const [selected, setSelected] = useState<GmailMessage | null>(null);
   const [fullThread, setFullThread] = useState<any | null>(null);
+  const selectedIdRef = useRef<string | null>(null);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingThread, setLoadingThread] = useState(false);
@@ -136,8 +137,8 @@ export const OutreachView: React.FC = () => {
 
   const openMessage = async (msg: GmailMessage) => {
     setComposing(false);
-    // Show the message immediately — don't wait for the full thread
     setSelected(msg);
+    selectedIdRef.current = msg.id;
     setFullThread(null);
     setLoadingThread(true);
 
@@ -146,13 +147,13 @@ export const OutreachView: React.FC = () => {
 
     try {
       const data = await apiFetch(`/api/fetch-threads?threadId=${fetchId}`);
-      // Only update if this message is still selected (avoid stale responses)
-      setFullThread(data);
+      if (selectedIdRef.current === msg.id) setFullThread(data);
     } catch {
-      // Fall back to rendering the list-level message data we already have
-      setFullThread({ id: msg.id, snippet: msg.snippet, messages: [msg] });
+      if (selectedIdRef.current === msg.id) {
+        setFullThread({ id: msg.id, snippet: msg.snippet, messages: [msg] });
+      }
     } finally {
-      setLoadingThread(false);
+      if (selectedIdRef.current === msg.id) setLoadingThread(false);
     }
   };
 

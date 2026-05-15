@@ -30,8 +30,9 @@ function useAutoResizeTextarea({ minHeight, maxHeight }: { minHeight: number; ma
   }, [minHeight]);
 
   useEffect(() => {
-    window.addEventListener('resize', () => adjustHeight());
-    return () => window.removeEventListener('resize', () => adjustHeight());
+    const onResize = () => adjustHeight();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
   }, [adjustHeight]);
 
   return { textareaRef, adjustHeight };
@@ -259,7 +260,7 @@ export default function PostJobView({ onPost }: PostJobViewProps) {
               whileTap={{ scale: 0.96 }}
               onClick={() => {
                 const base = `I'm looking for a ${industry.label} professional:\n\n`;
-                setDescription(prev => prev.startsWith("I'm looking for") ? prev.replace(/^I'm looking for a .* professional:\n\n/, base) : base + prev);
+                setDescription(prev => prev.startsWith("I'm looking for") ? prev.replace(/^I'm looking for a .*? professional:[\r\n]+/, base) : base + prev);
                 setTimeout(() => adjustHeight(), 0);
               }}
               className="group flex items-center gap-1.5 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-100 text-gray-500 hover:text-brand hover:border-brand/30 hover:bg-brand/5 hover:shadow-md hover:-translate-y-0.5 transition-all text-[11px] font-medium shadow-sm cursor-pointer"

@@ -152,7 +152,8 @@ export function IntegrationsView() {
     setMsConnecting(true);
     try {
       const msResult = await signInWithMicrosoft();
-      const uid = auth.currentUser?.uid ?? msResult.account?.localAccountId ?? 'ms-anon';
+      const uid = auth.currentUser?.uid ?? msResult.account?.localAccountId;
+      if (!uid) throw new Error('No authenticated user — please sign in first.');
       await saveTokenToDB(uid, 'microsoft', msResult.accessToken);
       setMsStatus(readStatus('microsoft'));
     } catch (e: any) {

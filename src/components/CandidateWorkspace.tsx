@@ -126,7 +126,7 @@ export default function CandidateWorkspace({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <>{candidate.firstName[0]}{candidate.lastName?.[0] || ''}</>
+                      <>{candidate.firstName?.[0] ?? ''}{candidate.lastName?.[0] ?? ''}</>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -166,7 +166,7 @@ export default function CandidateWorkspace({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <>{selectedCandidate.firstName[0]}{selectedCandidate.lastName?.[0]}</>
+                      <>{selectedCandidate.firstName?.[0] ?? ''}{selectedCandidate.lastName?.[0] ?? ''}</>
                     )}
                   </div>
                   <div>

@@ -196,7 +196,7 @@ export default function CandidateListView({ jobTitle, candidates, onSelectCandid
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <span>{candidate.firstName[0]}{candidate.fullName.split(' ').pop()?.[0]}</span>
+                          <span>{candidate.firstName?.[0] ?? ''}{candidate.fullName?.split(' ').pop()?.[0] ?? ''}</span>
                         )}
                       </div>
                       <div>

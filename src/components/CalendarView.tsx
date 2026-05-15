@@ -11,7 +11,7 @@ import {
   Trash2,
 } from 'lucide-react';
 
-import { Candidate, Interview } from '../types';
+import { Candidate, Interview, Job } from '../types';
 import { ScheduleInterviewModal } from './ScheduleInterviewModal';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -23,6 +23,7 @@ const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frid
 
 interface CalendarViewProps {
   candidates?: Candidate[];
+  jobs?: Job[];
   interviews?: Interview[];
   userId?: string;
   jobId?: string;
@@ -32,6 +33,7 @@ interface CalendarViewProps {
 
 export const CalendarView: React.FC<CalendarViewProps> = ({
   candidates = [],
+  jobs = [],
   interviews = [],
   userId = '',
   jobId,
@@ -46,21 +48,21 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   const [modalDefaultDate, setModalDefaultDate] = useState<string | undefined>();
 
   const handlePrevMonth = () => {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear(y => y - 1);
-    } else {
-      setCurrentMonth(m => m - 1);
-    }
+    const newMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const newYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+    const daysInNew = new Date(newYear, newMonth + 1, 0).getDate();
+    setCurrentMonth(newMonth);
+    if (currentMonth === 0) setCurrentYear(y => y - 1);
+    setSelectedDay(d => Math.min(d, daysInNew));
   };
 
   const handleNextMonth = () => {
-    if (currentMonth === 11) {
-      setCurrentMonth(0);
-      setCurrentYear(y => y + 1);
-    } else {
-      setCurrentMonth(m => m + 1);
-    }
+    const newMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+    const newYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+    const daysInNew = new Date(newYear, newMonth + 1, 0).getDate();
+    setCurrentMonth(newMonth);
+    if (currentMonth === 11) setCurrentYear(y => y + 1);
+    setSelectedDay(d => Math.min(d, daysInNew));
   };
 
   const openModal = (day?: number) => {
@@ -76,6 +78,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
   const getInterviewsForDay = (day: number) =>
     interviews.filter(iv => {
+      if (!iv.date) return false;
       const [y, m, d] = iv.date.split('-').map(Number);
       return y === currentYear && m - 1 === currentMonth && d === day;
     });
@@ -311,6 +314,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
       {showModal && onScheduleInterview && (
         <ScheduleInterviewModal
           candidates={candidates}
+          jobs={jobs}
           defaultDate={modalDefaultDate}
           userId={userId}
           jobId={jobId}

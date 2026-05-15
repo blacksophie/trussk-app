@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Video, Phone, Loader2, Link } from 'lucide-react';
-import { Candidate, Interview } from '../types';
+import { Candidate, Interview, Job } from '../types';
 import { auth } from '../lib/firebase';
 
 const TIMES = [
@@ -20,6 +20,7 @@ const DURATIONS = [
 
 interface Props {
   candidates: Candidate[];
+  jobs?: Job[];
   defaultDate?: string; // YYYY-MM-DD
   userId: string;
   jobId?: string;
@@ -29,6 +30,7 @@ interface Props {
 
 export const ScheduleInterviewModal: React.FC<Props> = ({
   candidates,
+  jobs = [],
   defaultDate,
   userId,
   jobId,
@@ -38,7 +40,17 @@ export const ScheduleInterviewModal: React.FC<Props> = ({
   const today = new Date();
   const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-  const [candidateId, setCandidateId] = useState(candidates[0]?.id ?? '');
+  const [selectedJobId, setSelectedJobId] = useState<string>(jobId ?? jobs[0]?.id ?? '');
+
+  const filteredCandidates = useMemo(() => {
+    if (!selectedJobId) return candidates;
+    return candidates.filter(c => (c as any).jobId === selectedJobId);
+  }, [candidates, selectedJobId]);
+
+  const [candidateId, setCandidateId] = useState(() => {
+    const initial = candidates.find(c => (c as any).jobId === (jobId ?? jobs[0]?.id));
+    return initial?.id ?? candidates[0]?.id ?? '';
+  });
   const [date, setDate] = useState(defaultDate ?? todayStr);
   const [time, setTime] = useState('10:00 AM');
   const [durationMinutes, setDurationMinutes] = useState(60);
@@ -48,7 +60,13 @@ export const ScheduleInterviewModal: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const selectedCandidate = candidates.find(c => c.id === candidateId) ?? candidates[0];
+  const selectedCandidate = filteredCandidates.find(c => c.id === candidateId) ?? filteredCandidates[0];
+
+  const handleJobChange = (newJobId: string) => {
+    setSelectedJobId(newJobId);
+    const firstCandidate = candidates.find(c => (c as any).jobId === newJobId);
+    setCandidateId(firstCandidate?.id ?? '');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,7 +117,7 @@ export const ScheduleInterviewModal: React.FC<Props> = ({
       }
     }
 
-    const initials = selectedCandidate.firstName?.[0] ?? selectedCandidate.fullName[0];
+    const initials = selectedCandidate.firstName?.[0] ?? selectedCandidate.fullName?.[0] ?? '?';
     const interview: Omit<Interview, 'id' | 'createdAt'> = {
       candidateId: selectedCandidate.id ?? candidateId,
       candidateName: selectedCandidate.fullName,
@@ -154,6 +172,22 @@ export const ScheduleInterviewModal: React.FC<Props> = ({
           </div>
 
           <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+            {/* Job Post */}
+            {jobs.length > 0 && (
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Job Post</label>
+                <select
+                  value={selectedJobId}
+                  onChange={e => handleJobChange(e.target.value)}
+                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
+                >
+                  {jobs.map(j => (
+                    <option key={j.id} value={j.id}>{j.title}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             {/* Candidate */}
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">Candidate</label>
@@ -161,10 +195,15 @@ export const ScheduleInterviewModal: React.FC<Props> = ({
                 value={candidateId}
                 onChange={e => setCandidateId(e.target.value)}
                 className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
+                disabled={filteredCandidates.length === 0}
               >
-                {candidates.map(c => (
-                  <option key={c.id} value={c.id}>{c.fullName} — {c.title}</option>
-                ))}
+                {filteredCandidates.length === 0 ? (
+                  <option value="">No candidates for this job post</option>
+                ) : (
+                  filteredCandidates.map(c => (
+                    <option key={c.id} value={c.id}>{c.fullName} — {c.title}</option>
+                  ))
+                )}
               </select>
             </div>
 
@@ -269,7 +308,7 @@ export const ScheduleInterviewModal: React.FC<Props> = ({
 
             <button
               type="submit"
-              disabled={loading || candidates.length === 0}
+              disabled={loading || filteredCandidates.length === 0}
               className="w-full py-2.5 bg-brand text-white rounded-lg text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
             >
               {loading ? (

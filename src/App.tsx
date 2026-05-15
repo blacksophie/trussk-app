@@ -110,18 +110,13 @@ function AppContent() {
       return;
     }
 
-    let constraints = [where('userId', '==', user.uid)];
-    if (selectedJob?.id) {
-       constraints.push(where('jobId', '==', selectedJob.id));
-    }
-
     const q = query(
-      collection(db, 'candidates'), 
-      ...constraints
+      collection(db, 'candidates'),
+      where('userId', '==', user.uid)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as any));
+      const docs = snapshot.docs.map(d => ({ ...d.data(), id: d.id } as Candidate));
       setCandidates(docs);
       
       // Update selected candidate if it's in the list
@@ -134,7 +129,7 @@ function AppContent() {
     });
 
     return unsubscribe;
-  }, [user, selectedCandidate?.id, selectedJob?.id]);
+  }, [user, selectedCandidate?.id]);
 
   // Sync Interviews
   useEffect(() => {
@@ -151,7 +146,7 @@ function AppContent() {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Interview));
       // Sort client-side to avoid composite index requirement
-      docs.sort((a, b) => a.date.localeCompare(b.date));
+      docs.sort((a, b) => (a.date ?? '').localeCompare(b.date ?? ''));
       setInterviews(docs);
     }, (error) => {
       handleFirestoreError(error, OperationType.LIST, 'interviews');
@@ -193,8 +188,8 @@ function AppContent() {
     
     try {
       const candidateDoc = candidates.find(c => c.id === id);
-      if (candidateDoc && (candidateDoc as any).id) {
-        const ref = doc(db, 'candidates', (candidateDoc as any).id);
+      if (candidateDoc?.id) {
+        const ref = doc(db, 'candidates', candidateDoc.id);
         await updateDoc(ref, { stage: newStage });
         toast(`Candidate moved to ${newStage}`, 'success');
       }
@@ -206,12 +201,12 @@ function AppContent() {
 
   const handleSaveNotes = useCallback(async (id: string, notes: string) => {
     if (!user) return;
-    
+
     try {
       const candidateDoc = candidates.find(c => c.id === id);
-      if (candidateDoc && (candidateDoc as any).id) {
-        const ref = doc(db, 'candidates', (candidateDoc as any).id);
-        await updateDoc(ref, { validationNotes: notes }); // Using validationNotes as notes storage for now or we could add a notes field
+      if (candidateDoc?.id) {
+        const ref = doc(db, 'candidates', candidateDoc.id);
+        await updateDoc(ref, { validationNotes: notes });
         toast('Notes saved successfully', 'success');
       }
     } catch (error) {
@@ -505,11 +500,11 @@ function AppContent() {
               exit={{ opacity: 0 }}
               className="w-full h-full"
             >
-              <CandidateWorkspace 
-                jobTitle={selectedJob?.title || jobDescription.split('\n')[0]} 
-                candidates={candidates} 
+              <CandidateWorkspace
+                jobTitle={selectedJob?.title || jobDescription.split('\n')[0]}
+                candidates={selectedJob?.id ? candidates.filter(c => (c as any).jobId === selectedJob.id) : candidates}
                 selectedCandidate={selectedCandidate}
-                onSelectCandidate={handleSelectCandidate} 
+                onSelectCandidate={handleSelectCandidate}
                 onUpdateStage={handleUpdateCandidateStage}
                 onSaveNotes={handleSaveNotes}
               />
@@ -539,6 +534,7 @@ function AppContent() {
             >
               <CalendarView
                 candidates={candidates}
+                jobs={postedJobs}
                 interviews={interviews}
                 userId={user.uid}
                 jobId={selectedJob?.id}
