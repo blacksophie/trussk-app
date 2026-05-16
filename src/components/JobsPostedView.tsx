@@ -69,10 +69,16 @@ function pipelineScore(stages: number[]): number {
   return Math.round((weighted / (total * stages.length)) * 100);
 }
 
-function descriptionSnippet(desc: string): string {
+function descriptionSnippet(desc: string, title: string): string {
   if (!desc) return '';
-  const clean = desc.replace(/<[^>]+>/g, '').trim();
-  return clean.length > 180 ? clean.slice(0, 180).replace(/\s+\S*$/, '') + '…' : clean;
+  // Strip HTML and normalise whitespace
+  const clean = desc.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  // Skip if description just repeats the title (common when job title is pasted into description)
+  const cleanLower = clean.toLowerCase();
+  const titleLower = title.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const descStart = cleanLower.slice(0, title.length + 20).replace(/[^a-z0-9]/g, '');
+  if (descStart.includes(titleLower.slice(0, 15))) return '';
+  return clean.length > 160 ? clean.slice(0, 160).replace(/\s+\S*$/, '') + '…' : clean;
 }
 
 export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJob, onDeleteJob, onNewRole }) => {
@@ -148,7 +154,7 @@ export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJo
 
         {/* Column headers */}
         {filtered.length > 0 && (
-          <div className="grid grid-cols-[1fr_160px_200px_100px_48px] gap-4 px-6 mb-3">
+          <div className="grid grid-cols-[1fr_148px_220px_88px_44px] gap-6 px-6 mb-3">
             <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Role</span>
             <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Industry</span>
             <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Pipeline</span>
@@ -190,7 +196,7 @@ export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJo
                 const count = candidateCount(index);
                 const stages = pipelineStages(index);
                 const score = pipelineScore(stages);
-                const snippet = descriptionSnippet(job.description);
+                const snippet = descriptionSnippet(job.description, job.title);
                 const isDeleting = deleteConfirm === job.id;
 
                 return (
@@ -204,12 +210,12 @@ export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJo
                     onClick={() => !isDeleting && onSelectJob(job)}
                     className={`group relative bg-white rounded-2xl border border-gray-100 border-l-[3px] ${cfg.border} shadow-sm hover:shadow-[0_4px_24px_rgba(0,0,0,0.07)] hover:border-gray-200 transition-all duration-200 cursor-pointer overflow-hidden`}
                   >
-                    <div className="grid grid-cols-[1fr_160px_200px_100px_48px] gap-4 items-center px-6 py-5">
+                    <div className="grid grid-cols-[1fr_148px_220px_88px_44px] gap-6 items-center px-6 py-4">
 
-                      {/* Col 1: Title + meta + snippet */}
+                      {/* Col 1: Title + meta */}
                       <div className="min-w-0">
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <span className="flex items-center gap-1 text-[11px] text-emerald-500 font-semibold">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="flex items-center gap-1.5 text-[11px] text-emerald-500 font-semibold">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                             Active
                           </span>
@@ -220,17 +226,17 @@ export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJo
                           </span>
                         </div>
 
-                        <h2 className="text-[15px] font-bold text-gray-900 tracking-tight leading-snug mb-1.5 group-hover:text-brand transition-colors duration-150">
+                        <h2 className="text-[14px] font-bold text-gray-900 tracking-tight leading-tight truncate mb-1.5 group-hover:text-brand transition-colors duration-150">
                           {job.title}
                         </h2>
 
-                        <div className="flex items-center gap-1.5 text-[12px] text-gray-400 mb-2.5">
+                        <div className="flex items-center gap-1.5 text-[12px] text-gray-400">
                           <MapPin className="w-3 h-3 shrink-0" />
-                          {job.location}
+                          <span className="truncate">{job.location}</span>
                         </div>
 
                         {snippet && (
-                          <p className="text-[12px] text-gray-400 leading-relaxed line-clamp-2 max-w-130">
+                          <p className="text-[11px] text-gray-400 leading-relaxed mt-1.5 line-clamp-1">
                             {snippet}
                           </p>
                         )}
@@ -244,33 +250,41 @@ export const JobsPostedView: React.FC<JobsPostedViewProps> = ({ jobs, onSelectJo
                         </span>
                       </div>
 
-                      {/* Col 3: Pipeline */}
+                      {/* Col 3: Pipeline — segmented horizontal bar */}
                       <div>
-                        <div className="flex items-end gap-0.5 h-8 mb-2">
+                        {/* Segmented bar */}
+                        <div className="flex items-center gap-0.5 mb-2.5">
                           {stages.map((s, i) => {
-                            const max = Math.max(...stages);
-                            const h = max > 0 ? Math.max(15, Math.round((s / max) * 100)) : 15;
+                            const total = stages.reduce((a, b) => a + b, 0);
+                            const pct = total > 0 ? Math.max(4, Math.round((s / total) * 100)) : 20;
                             return (
-                              <div key={i} className="flex-1 flex flex-col items-center justify-end gap-1">
-                                <div
-                                  className={`w-full rounded-sm ${STAGE_COLORS[i]} transition-all`}
-                                  style={{ height: `${h}%` }}
-                                  title={`${STAGES[i]}: ${s}`}
-                                />
-                              </div>
+                              <div
+                                key={i}
+                                title={`${STAGES[i]}: ${s} candidates`}
+                                className={`h-2 rounded-sm ${STAGE_COLORS[i]} first:rounded-l-full last:rounded-r-full`}
+                                style={{ width: `${pct}%` }}
+                              />
                             );
                           })}
                         </div>
+                        {/* Stage labels */}
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-gray-400">Identified</span>
-                          <span className="text-[11px] font-bold text-brand">{score}%</span>
-                          <span className="text-[10px] text-gray-400">Offer</span>
+                          {STAGES.map((label, i) => (
+                            <div key={i} className="flex flex-col items-center gap-0.5">
+                              <span className="text-[9px] text-gray-400 font-medium leading-none">{stages[i]}</span>
+                              <span className="text-[9px] text-gray-300 leading-none">{label.split(' ')[0]}</span>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Score */}
+                        <div className="flex items-center justify-end mt-1.5">
+                          <span className="text-[11px] font-bold text-brand">{score}% filled</span>
                         </div>
                       </div>
 
                       {/* Col 4: Candidates */}
                       <div className="text-center">
-                        <p className="text-[26px] font-bold text-gray-900 leading-none tabular-nums">{count}</p>
+                        <p className="text-[24px] font-bold text-gray-900 leading-none tabular-nums">{count}</p>
                         <p className="text-[10px] text-gray-400 mt-1 flex items-center justify-center gap-1">
                           <Users className="w-3 h-3" />
                           candidates
